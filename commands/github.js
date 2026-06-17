@@ -8,7 +8,7 @@ async function githubCommand(sock, chatId, message) {
 
     // Fetch GitHub repo data
     const res = await fetch(
-      'https://api.github.com/repos/linux-ser/linux-ser'
+      'https://api.github.com/repos/linuxser-bot/linuxserbot'
     );
 
     if (!res.ok) {
