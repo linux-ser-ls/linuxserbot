@@ -451,9 +451,11 @@ _✨ Search • Download • Enjoy_`
 
 		// ================= SEND AUDIO =================
 
-		const tempFile = "./temp/${Date.now()}.mp3";
-
-fs.writeFileSync(tempFile, finalBuffer);
+		const tempFile = `./temp/${Date.now()}.mp3`;
+		if (!fs.existsSync('./temp')) {
+    fs.mkdirSync('./temp', { recursive: true });
+		}
+    fs.writeFileSync(tempFile, finalBuffer);
 
 const tags = {
 title: video?.title?.trim() || '♪ 𝐕ɪʙᴇ 𝐁ʏ 𝐋ꜱ',
@@ -476,9 +478,9 @@ audio: finalBuffer,
 mimetype: 'audio/mpeg',
 
 fileName:
-`${(video?.title || 'linuxser')
-    .replace(/[\\/:*?"<>|]/g, '')
-    .substring(0, 80)}.mp3`,
+`${video?.title?.trim()
+    ?.replace(/[\\/:*?"<>|]/g, '')
+    ?.substring(0, 80) || 'linuxser'}.mp3`,
 
 ptt: false
 
