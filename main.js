@@ -152,6 +152,7 @@ const findCommand = require('./commands/find');
 const qrCommand = require('./commands/qrcode');
 const readQrCommand = require('./commands/readqr');
 const { startQuizPoll, revealQuizAnswer } = require('./commands/quiz');
+const renameCommand = require('./commands/rename');
 
 // Global settings
 global.packname = settings.packname;
@@ -477,6 +478,9 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 message
              );
                 commandExecuted = true;
+                break;
+            case userMessage === '.rename':
+                await renameCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.delete') || userMessage.startsWith('.del'):
                 await deleteCommand(sock, chatId, message, senderId);
