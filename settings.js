@@ -1,8 +1,8 @@
 const settings = {
-  packname: '𝐋ɪɴᴜх 𝐒ᴇʀ 🧃🕊️',
+  packname: '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓',
   author: '‎',
-  botName: "𝐋ɪɴᴜх 𝐒ᴇʀ 🧃🕊️",
-  botOwner: '𝐋ɪɴᴜх 𝐒ᴇʀ 🧃🕊️', // Your name
+  botName: "𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓",
+  botOwner: '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓', // Your name
   ownerNumber: '917510660542', //Set your number here without + symbol, just add country code & number without any space
   giphyApiKey: 'qnl7ssQChTdPjsKta2Ax2LMaGXz303tq',
   commandMode: "public",
