@@ -4,7 +4,12 @@ let triviaGames = {};
 
 async function startTrivia(sock, chatId) {
     if (triviaGames[chatId]) {
-        sock.sendMessage(chatId, { text: 'A trivia game is already in progress!' });
+        sock.sendMessage(chatId, {
+text:
+`⚠️ A trivia game is already running!
+
+🎮 Answer the current question before starting a new one.`
+});
         return;
     }
 
@@ -19,8 +24,27 @@ async function startTrivia(sock, chatId) {
         };
 
         sock.sendMessage(chatId, {
-            text: `Trivia Time!\n\nQuestion: ${triviaGames[chatId].question}\nOptions:\n${triviaGames[chatId].options.join('\n')}`
-        });
+text:
+`🧠 Trivia Challenge
+
+❓ Question:
+${triviaGames[chatId].question}
+
+📚 Options:
+
+${triviaGames[chatId].options.map((opt, i) =>
+"${['1️⃣','2️⃣','3️⃣','4️⃣'][i]} ${opt}"
+).join('\n')}
+
+💡 Answer using:
+
+.answer <your answer>
+
+Example:
+.answer ${triviaGames[chatId].options[0]}
+
+⏳ Good luck 🍀`
+});
     } catch (error) {
         sock.sendMessage(chatId, { text: 'Error fetching trivia question. Try again later.' });
     }
@@ -28,16 +52,41 @@ async function startTrivia(sock, chatId) {
 
 function answerTrivia(sock, chatId, answer) {
     if (!triviaGames[chatId]) {
-        sock.sendMessage(chatId, { text: 'No trivia game is in progress.' });
+        sock.sendMessage(chatId, {
+text:
+`⚠️ No trivia game is currently active.
+
+🎮 Start a new game using the trivia command.`
+});
         return;
     }
 
     const game = triviaGames[chatId];
 
     if (answer.toLowerCase() === game.correctAnswer.toLowerCase()) {
-        sock.sendMessage(chatId, { text: `Correct! The answer is ${game.correctAnswer}` });
+        sock.sendMessage(chatId, {
+text:
+`✅ Correct Answer!
+
+🎉 Great job!
+
+🏆 Answer:
+${game.correctAnswer}
+
+✨ Well played!`
+});
     } else {
-        sock.sendMessage(chatId, { text: `Wrong! The correct answer was ${game.correctAnswer}` });
+        sock.sendMessage(chatId, {
+text:
+`❌ Wrong Answer!
+
+😅 Nice try!
+
+✅ Correct Answer:
+${game.correctAnswer}
+
+🎯 Better luck next time!`
+});
     }
 
     delete triviaGames[chatId];
