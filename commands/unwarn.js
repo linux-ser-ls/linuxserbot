@@ -3,7 +3,7 @@ const path = require('path');
 const isAdmin = require('../lib/isAdmin');
 
 const databaseDir = path.join(process.cwd(), 'data');
-const warningsPath = path.join(databaseDir, 'warnings.json');
+const warningsPath = path.join(databaseDir, '../data/warnings.json');
 
 async function unwarnCommand(sock, chatId, senderId, mentionedJids, message) {
 try {
