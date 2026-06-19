@@ -146,6 +146,7 @@ const qrCommand = require('./commands/qrcode');
 const readQrCommand = require('./commands/readqr');
 const { startQuizPoll, revealQuizAnswer } = require('./commands/quiz');
 const renameCommand = require('./commands/rename');
+const wikipediaCommand = require('./commands/wikipedia');
 
 // Global settings
 global.packname = settings.packname;
@@ -849,6 +850,11 @@ break;
             case userMessage.startsWith('.lyrics'):
                 const songTitle = userMessage.split(' ').slice(1).join(' ');
                 await lyricsCommand(sock, chatId, songTitle, message);
+                break;
+            case userMessage.startsWith('.wikipedia'):
+            case userMessage.startsWith('.wiki'):
+                const wikiArgs = userMessage.split(' ').slice(1);
+                await wikipediaCommand(sock, chatId, message, wikiArgs);
                 break;
             case userMessage.startsWith('.simp'):
                 const quotedMsg = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
