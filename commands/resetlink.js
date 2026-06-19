@@ -17,12 +17,13 @@ try {
         p => p.id === senderId
     );
 
-    const botNumber =
-        sock.user.id.split(':')[0];
-
-    const isBotAdmin = admins.some(
-        p => p.id.includes(botNumber)
+    const botParticipant = groupMetadata.participants.find(
+        p => p.id.split('@')[0].split(':')[0] ===
+        sock.user.id.split('@')[0].split(':')[0]
     );
+
+const isBotAdmin = !!botParticipant?.admin;
+
 
     if (!isAdmin) {
         return await sock.sendMessage(chatId, {
