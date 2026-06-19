@@ -21,10 +21,20 @@ Example:
         text: '📥 Downloading Pinterest media...'
     }, { quoted: message });
 
-    const { data } = await axios.get(
+    const response = await axios.get(
         `https://api-faa.my.id/faa/pin-down?url=${encodeURIComponent(link)}`,
-        { timeout: 30000 }
+        {
+            timeout: 30000,
+            headers: {
+                'User-Agent': 'Mozilla/5.0'
+            }
+        }
     );
+
+    const data = response.data;
+
+    console.log('Pinterest API Response:');
+    console.log(JSON.stringify(data, null, 2));
 
     const mediaUrl =
         data?.result?.url ||
@@ -35,19 +45,21 @@ Example:
         data?.download;
 
     if (!mediaUrl) {
-        throw new Error('Media URL not found in API response');
+        throw new Error('Media URL not found');
     }
 
-    const isVideo =
+    if (
         mediaUrl.endsWith('.mp4') ||
-        mediaUrl.includes('.mp4');
+        mediaUrl.includes('.mp4')
+    ) {
 
-    if (isVideo) {
         await sock.sendMessage(chatId, {
             video: { url: mediaUrl },
             caption: '✅ Pinterest Video Downloaded'
         }, { quoted: message });
+
     } else {
+
         await sock.sendMessage(chatId, {
             image: { url: mediaUrl },
             caption: '✅ Pinterest Image Downloaded'
@@ -61,12 +73,9 @@ Example:
     await sock.sendMessage(chatId, {
         text:
 
-`❌ Download failed.
+`❌ Download Failed
 
-Possible reasons:
-• Invalid Pinterest link
-• API is offline
-• API response format changed`
+${error.message}`
 }, { quoted: message });
 }
 }
