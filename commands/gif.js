@@ -64,16 +64,12 @@ Reply to a video with:
         Buffer.concat(chunks);
 
     const input =
-        path.join(
-            process.cwd(),
-            `gif_${Date.now()}.mp4`
-        );
+    path.join(__dirname,
+    `video_${Date.now()}.mp4`);
 
-    const output =
-        path.join(
-            process.cwd(),
-            `gif_${Date.now()}.mp4`
-        );
+const output =
+    path.join(__dirname,
+    `gif_${Date.now()}.mp4`);
 
     fs.writeFileSync(
         input,
