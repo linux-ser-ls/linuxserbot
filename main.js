@@ -1262,7 +1262,7 @@ break;
                 await revealQuizAnswer(sock, chatId);
                 break;
             case userMessage === '.pinterest':
-                await pinterestCommand (sock, chatId, message);
+                await pinterestCommand (sock, chatId, message, userMessage.slice(11).trim());
                 break;
             case userMessage === '.shayari' || userMessage === '.shayri':
                 await shayariCommand(sock, chatId, message);
