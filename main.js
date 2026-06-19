@@ -420,7 +420,8 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await warnCommand(sock, chatId, senderId, mentionedJidListWarn, message);
                 break;
             case userMessage.startsWith('.unwarn'):
-                await unwarnCommand(sock, chatId, senderId, mentionedJids, message);
+                const mentionedJidListUnwarn = message.message.extendedTextMessage?.contextInfo?.mentionedJid || [];
+                await unwarnCommand(sock, chatId, senderId, mentionedJidListUnwarn, message);
                 break;
             case userMessage.startsWith('.tts'):
                 const text = userMessage.slice(4).trim();
