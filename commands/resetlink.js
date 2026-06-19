@@ -1,6 +1,7 @@
 async function resetlinkCommand(sock, chatId, senderId) {
 try {
 
+```
     if (!chatId.endsWith('@g.us')) {
         return await sock.sendMessage(chatId, {
             text: '❌ This command can only be used in groups.'
@@ -9,21 +10,12 @@ try {
 
     const groupMetadata = await sock.groupMetadata(chatId);
 
-    const admins = groupMetadata.participants.filter(
-        p => p.admin !== null
+    const isAdmin = groupMetadata.participants.some(
+        p =>
+            p.id === senderId &&
+            (p.admin === 'admin' ||
+             p.admin === 'superadmin')
     );
-
-    const isAdmin = admins.some(
-        p => p.id === senderId
-    );
-
-    const botParticipant = groupMetadata.participants.find(
-        p => p.id.split('@')[0].split(':')[0] ===
-        sock.user.id.split('@')[0].split(':')[0]
-    );
-
-const isBotAdmin = !!botParticipant?.admin;
-
 
     if (!isAdmin) {
         return await sock.sendMessage(chatId, {
@@ -31,42 +23,59 @@ const isBotAdmin = !!botParticipant?.admin;
         });
     }
 
-    if (!isBotAdmin) {
-        return await sock.sendMessage(chatId, {
-            text: '❌ Please make me an admin first.'
-        });
-    }
-
-    await sock.sendMessage(chatId, {
+    const processing = await sock.sendMessage(chatId, {
         text: '🔄 Resetting group invite link...'
     });
 
-    await sock.groupRevokeInvite(chatId);
+    try {
 
-    const newCode =
-        await sock.groupInviteCode(chatId);
+        await sock.groupRevokeInvite(chatId);
 
-    const newLink =
-        `https://chat.whatsapp.com/${newCode}`;
+        const newCode =
+            await sock.groupInviteCode(chatId);
 
-    await sock.sendMessage(chatId, {
-        text:
+        await sock.sendMessage(chatId, {
+            text:
+```
 
 `✅ Group Link Reset Successfully
 
-🔗 New Invite Link: ${newLink}`
+🔗 New Link:
+https://chat.whatsapp.com/${newCode}
+
+⚠️ Previous invite link is now invalid.`
+}, {
+edit: processing.key
 });
 
+```
+    } catch (err) {
+
+        console.error('Group Revoke Error:', err);
+
+        await sock.sendMessage(chatId, {
+            text:
+```
+
+`❌ Failed To Reset Group Link
+
+Reason:
+${err.message}`
+}, {
+edit: processing.key
+});
+}
+
+```
 } catch (error) {
 
-    console.error(
-        'Reset Link Error:',
-        error
-    );
+    console.error('Reset Link Error:', error);
 
     await sock.sendMessage(chatId, {
         text:
-`❌ Failed to reset group link.
+```
+
+`❌ Unexpected Error
 
 ${error.message}`
 });
