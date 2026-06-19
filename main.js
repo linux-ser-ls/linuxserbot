@@ -146,6 +146,7 @@ const qrCommand = require('./commands/qrcode');
 const readQrCommand = require('./commands/readqr');
 const { startQuizPoll, revealQuizAnswer } = require('./commands/quiz');
 const renameCommand = require('./commands/rename');
+const aiCommand = require('./commands/ai');
 
 // Global settings
 global.packname = settings.packname;
@@ -1218,6 +1219,10 @@ break;
                 await rosedayCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.imagine') || userMessage.startsWith('.flux') || userMessage.startsWith('.dalle'): await imagineCommand(sock, chatId, message);
+                break;
+            case userMessage.startsWith('.ai'):
+                const aiArgs = userMessage.split(' ').slice(1);
+                await aiCommand(sock, chatId, message, aiArgs);
                 break;
             case userMessage === '.jid': await groupJidCommand(sock, chatId, message);
                 break;
