@@ -10,6 +10,9 @@ sock,
 chatId,
 message
 ) {
+let inputFile = null;
+let outputFile = null;
+
 try {
 
     const quoted =
@@ -35,7 +38,22 @@ Reply to a video with:
 );
 }
 
-    const processing =
+    const duration =
+        quoted.videoMessage.seconds || 0;
+
+    if (duration > 30) {
+        return await sock.sendMessage(
+            chatId,
+            {
+                text:
+
+'❌ Video must be under 30 seconds.'
+},
+{ quoted: message }
+);
+}
+
+    const progress =
         await sock.sendMessage(
             chatId,
             {
@@ -54,25 +72,29 @@ Reply to a video with:
 
     const chunks = [];
 
-    for await (
-        const chunk of stream
-    ) {
+    for await (const chunk of stream) {
         chunks.push(chunk);
     }
 
     const buffer =
         Buffer.concat(chunks);
 
-    const input =
-    path.join(__dirname,
-    `video_${Date.now()}.mp4`);
+    const stamp = Date.now();
 
-const output =
-    path.join(__dirname,
-    `gif_${Date.now()}.mp4`);
+    inputFile =
+        path.join(
+            process.cwd(),
+            `input_${stamp}.mp4`
+        );
+
+    outputFile =
+        path.join(
+            process.cwd(),
+            `gif_${stamp}.mp4`
+        );
 
     fs.writeFileSync(
-        input,
+        inputFile,
         buffer
     );
 
@@ -82,13 +104,15 @@ const output =
             reject
         ) => {
 
-            ffmpeg(input)
+            ffmpeg(inputFile)
+                .videoCodec('libx264')
                 .outputOptions([
-                    '-vf scale=512:-1',
-                    '-r 15'
+                    '-vf scale=480:-2',
+                    '-preset ultrafast',
+                    '-pix_fmt yuv420p',
+                    '-movflags +faststart'
                 ])
-                .toFormat('mp4')
-                .save(output)
+                .output(outputFile)
                 .on(
                     'end',
                     resolve
@@ -96,26 +120,44 @@ const output =
                 .on(
                     'error',
                     reject
-                );
+                )
+                .run();
         }
     );
+
+    const gifBuffer =
+        fs.readFileSync(
+            outputFile
+        );
 
     await sock.sendMessage(
         chatId,
         {
-            video:
-            fs.readFileSync(
-                output
-            ),
+            video: gifBuffer,
             gifPlayback: true,
             caption:
 
-'✅ Converted To GIF'
+'✅ GIF Created Successfully'
+},
+{
+quoted: message
 }
 );
 
-    fs.unlinkSync(input);
-    fs.unlinkSync(output);
+    try {
+
+        await sock.sendMessage(
+            chatId,
+            {
+                text:
+
+'✅ Conversion Complete',
+edit:
+progress.key
+}
+);
+
+    } catch {}
 
 } catch (error) {
 
@@ -135,7 +177,36 @@ ${error.message}`
 },
 { quoted: message }
 );
+
+} finally {
+
+    try {
+
+        if (
+            inputFile &&
+            fs.existsSync(
+                inputFile
+            )
+        ) {
+            fs.unlinkSync(
+                inputFile
+            );
+        }
+
+        if (
+            outputFile &&
+            fs.existsSync(
+                outputFile
+            )
+        ) {
+            fs.unlinkSync(
+                outputFile
+            );
+        }
+
+    } catch {}
 }
+
 }
 
 module.exports = gifCommand;
