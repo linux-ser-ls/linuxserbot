@@ -154,6 +154,7 @@ const qrCommand = require('./commands/qrcode');
 const readQrCommand = require('./commands/readqr');
 const { startQuizPoll, revealQuizAnswer } = require('./commands/quiz');
 const renameCommand = require('./commands/rename');
+const pinterestCommand = require('./commands/pinterest');
 
 // Global settings
 global.packname = settings.packname;
@@ -1259,6 +1260,9 @@ break;
                 break;
             case userMessage === '.quizanswer':
                 await revealQuizAnswer(sock, chatId);
+                break;
+            case userMessage.startsWith('.pinterest '):
+                await pinterestCommand (sock, chatId, message, userMessage.slice(11).trim());
                 break;
             case userMessage === '.shayari' || userMessage === '.shayri':
                 await shayariCommand(sock, chatId, message);
