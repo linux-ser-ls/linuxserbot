@@ -83,7 +83,6 @@ const { goodbyeCommand, handleLeaveEvent } = require('./commands/goodbye');
 const githubCommand = require('./commands/github');
 const { handleAntiBadwordCommand, handleBadwordDetection } = require('./lib/antibadword');
 const antibadwordCommand = require('./commands/antibadword');
-const { handleChatbotCommand, handleChatbotResponse } = require('./commands/chatbot');
 const takeCommand = require('./commands/take');
 const { flirtCommand } = require('./commands/flirt');
 const characterCommand = require('./commands/character');
@@ -100,12 +99,10 @@ const unbanCommand = require('./commands/unban');
 const emojimixCommand = require('./commands/emojimix');
 const { handlePromotionEvent } = require('./commands/promote');
 const { handleDemotionEvent } = require('./commands/demote');
-const viewOnceCommand = require('./commands/viewonce');
 const clearSessionCommand = require('./commands/clearsession');
 const { autoStatusCommand, handleStatusUpdate } = require('./commands/autostatus');
 const { simpCommand } = require('./commands/simp');
 const { stupidCommand } = require('./commands/stupid');
-const stickerTelegramCommand = require('./commands/stickertelegram');
 const textmakerCommand = require('./commands/textmaker');
 const { handleAntideleteCommand, handleMessageRevocation, storeMessage } = require('./commands/antidelete');
 const clearTmpCommand = require('./commands/cleartmp');
@@ -113,14 +110,11 @@ const setProfilePicture = require('./commands/setpp');
 const { setGroupDescription, setGroupName, setGroupPhoto } = require('./commands/groupmanage');
 const instagramCommand = require('./commands/instagram');
 const facebookCommand = require('./commands/facebook');
-const spotifyCommand = require('./commands/spotify');
 const playCommand = require('./commands/play');
 const tiktokCommand = require('./commands/tiktok');
 const songCommand = require('./commands/song');
-const aiCommand = require('./commands/ai');
 const urlCommand = require('./commands/url');
 const { handleTranslateCommand } = require('./commands/translate');
-const { handleSsCommand } = require('./commands/ss');
 const { addCommandReaction, handleAreactCommand } = require('./lib/reactions');
 const { goodmorningCommand } = require('./commands/goodmorning');
 const { goodnightCommand } = require('./commands/goodnight');
@@ -147,7 +141,6 @@ const { anticallCommand, readState: readAnticallState } = require('./commands/an
 const { pmblockerCommand, readState: readPmBlockerState } = require('./commands/pmblocker');
 const runtimeCommand = require('./commands/runtime');
 const settingsCommand = require('./commands/settings');
-const soraCommand = require('./commands/sora');
 const findCommand = require('./commands/find');
 const qrCommand = require('./commands/qrcode');
 const readQrCommand = require('./commands/readqr');
@@ -293,16 +286,6 @@ async function handleMessages(sock, messageUpdate, printLog) {
             if (isGroup) {
                 await handleTagDetection(sock, chatId, message, senderId);
                 await handleMentionDetection(sock, chatId, message);
-
-                if (isPublic || isOwnerOrSudoCheck) {
-                    await handleChatbotResponse(
-                        sock,
-                        chatId,
-                        message,
-                        userMessage,
-                        senderId
-                    );
-                 }
               }
 
             return;
@@ -973,21 +956,6 @@ break;
 
                 await antibadwordCommand(sock, chatId, message, senderId, isSenderAdmin);
                 break;
-            case userMessage.startsWith('.chatbot'):
-                if (!isGroup) {
-                    await sock.sendMessage(chatId, { text: 'This command can only be used in groups.', ...channelInfo }, { quoted: message });
-                    return;
-                }
-
-                const chatbotAdminStatus = await isAdmin(sock, chatId, senderId);
-                if (!chatbotAdminStatus.isSenderAdmin && !message.key.fromMe) {
-                    await sock.sendMessage(chatId, { text: '*Only admins or bot owner can use this command*', ...channelInfo }, { quoted: message });
-                    return;
-                }
-
-                const match = userMessage.slice(8).trim();
-                await handleChatbotCommand(sock, chatId, message, match);
-                break;
             case userMessage.startsWith('.take') || userMessage.startsWith('.steal'):
                 {
                     const isSteal = userMessage.startsWith('.steal');
@@ -1066,13 +1034,6 @@ break;
                 break;
             case userMessage.startsWith('.emojimix') || userMessage.startsWith('.emix'):
                 await emojimixCommand(sock, chatId, message);
-                break;
-            case userMessage.startsWith('.tg') || userMessage.startsWith('.stickertelegram') || userMessage.startsWith('.tgsticker') || userMessage.startsWith('.telesticker'):
-                await stickerTelegramCommand(sock, chatId, message);
-                break;
-
-            case userMessage === '.vv':await sock.sendMessage(chatId, { text: 'This command can only be used in groups!', ...channelInfo }, { quoted: message });
-                await viewOnceCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.bday') || userMessage.startsWith('.birth') || userMessage.startsWith('.birthday'):
                 await birthdayFull(sock, chatId, message);
@@ -1187,9 +1148,6 @@ break;
             case userMessage.startsWith('.fb') || userMessage.startsWith('.facebook'):
                 await facebookCommand(sock, chatId, message);
                 break;
-            case userMessage.startsWith('.spotify'):
-                await spotifyCommand(sock, chatId, message);
-                break;
             case userMessage.startsWith('.mp3') || userMessage.startsWith('.ytmp3') || userMessage.startsWith('.song'):
                 await songCommand(sock, chatId, message);
                 break;
@@ -1205,17 +1163,10 @@ break;
             case userMessage.startsWith('.tiktok') || userMessage.startsWith('.tt'):
                 await tiktokCommand(sock, chatId, message);
                 break;
-            case userMessage.startsWith('.gpt') || userMessage.startsWith('.gemini'):
-                await aiCommand(sock, chatId, message);
-                break;
             case userMessage.startsWith('.translate') || userMessage.startsWith('.trt'):
                 const commandLength = userMessage.startsWith('.translate') ? 10 : 4;
                 await handleTranslateCommand(sock, chatId, message, userMessage.slice(commandLength));
                 return;
-            case userMessage.startsWith('.ss') || userMessage.startsWith('.ssweb') || userMessage.startsWith('.screenshot'):
-                const ssCommandLength = userMessage.startsWith('.screenshot') ? 11 : (userMessage.startsWith('.ssweb') ? 6 : 3);
-                await handleSsCommand(sock, chatId, message, userMessage.slice(ssCommandLength).trim());
-                break;
             case userMessage.startsWith('.areact') || userMessage.startsWith('.autoreact'):
                 await handleAreactCommand(sock, chatId, message, isOwnerOrSudoCheck);
                 commandExecuted = true;
@@ -1418,17 +1369,8 @@ break;
                     await imgCommand(sock, chatId, message, args);
                 }
                 break;
-            case userMessage.startsWith('.remini') || userMessage.startsWith('.enhance') || userMessage.startsWith('.upscale'):
-                await reminiCommand(sock, chatId, message, userMessage.split(' ').slice(1));
-                break;
-            case userMessage.startsWith('.sora'):
-                await soraCommand(sock, chatId, message);
-                break;
             default:
                 if (isGroup) {
-                    if (userMessage) {
-                        await handleChatbotResponse(sock, chatId, message, userMessage, senderId);
-                    }
                     await handleTagDetection(sock, chatId, message, senderId);
                     await handleMentionDetection(sock, chatId, message);
                 }
