@@ -12,16 +12,19 @@ async function wikipediaCommand(
             return await sock.sendMessage(
                 chatId,
                 {
-                    text:
-`📚 Wikipedia Search
-
-Usage:
-.wikipedia <topic>
-
-Examples:
-.wikipedia Kerala
-.wikipedia Cristiano Ronaldo
-.wikipedia JavaScript`
+                    text: `╭───❮ *ᴡɪᴋɪᴘᴇᴅɪᴀ* ❯
+│
+├ 📚 ꜱᴇᴀʀᴄʜ ᴛᴏᴘɪᴄꜱ
+│
+├ ⚡ ᴜꜱᴀɢᴇ:
+│   .ᴡɪᴋɪᴘᴇᴅɪᴀ <ᴛᴏᴘɪᴄ>
+│
+├ 📖 ᴇxᴀᴍᴘʟᴇꜱ:
+│   .ᴡɪᴋɪᴘᴇᴅɪᴀ ᴋᴇʀᴀʟᴀ
+│   .ᴡɪᴋɪᴘᴇᴅɪᴀ ᴄʀɪꜱᴛɪᴀɴᴏ ʀᴏɴᴀʟᴅᴏ
+│   .ᴡɪᴋɪᴘᴇᴅɪᴀ ᴊᴀᴠᴀꜱᴄʀɪᴘᴛ
+│
+╰─────────────⦁`
                 },
                 { quoted: message }
             );
@@ -32,7 +35,7 @@ Examples:
         const processing = await sock.sendMessage(
             chatId,
             {
-                text: '📚 Searching Wikipedia...'
+                text: '_📚 Searching Wikipedia..._'
             },
             { quoted: message }
         );
