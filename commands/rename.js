@@ -2,13 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const NodeID3 = require('node-id3');
-const {
-    downloadContentFromMessage
-} = require('@whiskeysockets/baileys');
+const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 
 // ---------- Helpers ----------
 function parseArgs(text = '') {
     const parts = text.split(',').map(v => v.trim());
+
     return {
         title: parts[0] || 'Unknown Title',
         artist: parts[1] || 'Unknown Artist',
@@ -18,7 +17,7 @@ function parseArgs(text = '') {
 }
 
 function isUrl(text = '') {
-    return /^https?:\/\//i.test(text);
+    return /^https?:\/\/\S+/i.test(text.trim());
 }
 
 async function downloadUrlBuffer(url) {
@@ -44,45 +43,51 @@ async function downloadWhatsAppMedia(message, type = 'audio') {
 async function renameCommand(sock, chatId, message, text = '') {
 try {
 
+    await sock.sendMessage(chatId, { react: { text: "🎧", key: message.key } });
+
     if (!fs.existsSync('./temp')) {
         fs.mkdirSync('./temp');
     }
 
-    // ---------- Parse metadata ----------
     const { title, artist, album, cover } = parseArgs(text);
 
     let buffer;
     let fileName = `${Date.now()}.mp3`;
 
-    // ---------- Detect quoted message ----------
     const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-    const msg = quoted || message.message;
+
+    const msg = message.message;
 
     let mediaMsg = null;
     let mediaType = null;
 
-    // ---------- CASE 1: URL input ----------
-    if (isUrl(text)) {
-        buffer = await downloadUrlBuffer(text);
+    // ---------- URL DETECTION (SAFE) ----------
+    const firstArg = text.split(',')[0]?.trim();
+
+    if (firstArg && isUrl(firstArg)) {
+        buffer = await downloadUrlBuffer(firstArg);
         mediaType = 'url';
     }
 
-    // ---------- CASE 2: WhatsApp media ----------
-    else if (msg?.audioMessage) {
-        mediaMsg = msg.audioMessage;
-        mediaType = 'audio';
+    // ---------- WhatsApp Audio ----------
+    else if (msg?.audioMessage || quoted?.audioMessage) {
+        mediaMsg = msg?.audioMessage || quoted?.audioMessage;
         buffer = await downloadWhatsAppMedia(mediaMsg, 'audio');
+        mediaType = 'audio';
     }
 
-    else if (msg?.documentMessage) {
-        mediaMsg = msg.documentMessage;
-        mediaType = 'document';
+    // ---------- WhatsApp Document ----------
+    else if (msg?.documentMessage || quoted?.documentMessage) {
+        mediaMsg = msg?.documentMessage || quoted?.documentMessage;
         buffer = await downloadWhatsAppMedia(mediaMsg, 'document');
+        mediaType = 'document';
     }
 
     else {
+        await sock.sendMessage(chatId, { react: { text: "❌", key: message.key } });
+
         return sock.sendMessage(chatId, {
-    text: `🎧 *Rename Command Usage*
+            text: `🎧 *Rename Command Usage*
 
 .reply to audio/document OR use URL
 
@@ -98,45 +103,45 @@ try {
 • Direct audio URL (mp3 links)
 
 🎨 Cover image is optional (URL only)`
-}, { quoted: message });
+        }, { quoted: message });
     }
 
-    // ---------- Progress ----------
+    // ---------- Processing ----------
     const status = await sock.sendMessage(chatId, {
         text: '🎧 Processing media...'
     }, { quoted: message });
 
-    // ---------- Save file ----------
+    // ---------- Save ----------
     const filePath = path.join('./temp', fileName);
     fs.writeFileSync(filePath, buffer);
 
-    // ---------- Cover image ----------
+    // ---------- Cover ----------
     let coverBuffer = null;
 
     if (cover && isUrl(cover)) {
         try {
-            const res = await axios.get(cover, {
-                responseType: 'arraybuffer'
-            });
+            const res = await axios.get(cover, { responseType: 'arraybuffer' });
             coverBuffer = Buffer.from(res.data);
-        } catch (e) {
-            console.log('⚠️ Cover download failed, skipping...');
+        } catch {
+            console.log('⚠️ Cover load failed');
         }
     }
 
-    // ---------- ID3 tagging ----------
-    const tags = {
+    // ---------- ID3 ----------
+    NodeID3.write({
         title,
         artist,
         album,
         image: coverBuffer || undefined
-    };
+    }, filePath);
 
-    NodeID3.write(tags, filePath);
-
-    // ---------- Send result ----------
+    // ---------- Success ----------
     await sock.sendMessage(chatId, {
-        text: '✅ Renamed & tagged successfully!',
+        react: { text: "✅", key: message.key }
+    });
+
+    await sock.sendMessage(chatId, {
+        text: '🎉 Renamed & tagged successfully!',
         edit: status.key
     });
 
@@ -150,6 +155,10 @@ try {
 
 } catch (err) {
     console.error('Rename Error:', err);
+
+    await sock.sendMessage(chatId, {
+        react: { text: "❌", key: message.key }
+    });
 
     await sock.sendMessage(chatId, {
         text: `❌ Error:\n${err.message}`
