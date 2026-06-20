@@ -92,7 +92,7 @@ try {
     });
 
     // WhatsApp clients may show the title from filename more than from ID3 tags.
-    const safeTitle = 'Linux Ser';
+    const safeTitle = 'linuxser';
     const fileName = `${safeTitle}.mp3`;
 
     await sock.sendMessage(
