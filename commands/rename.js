@@ -82,8 +82,23 @@ try {
 
     else {
         return sock.sendMessage(chatId, {
-            text: '❌ Reply to audio/document OR provide a valid URL.'
-        }, { quoted: message });
+    text: `🎧 *Rename Command Usage*
+
+.reply to audio/document OR use URL
+
+🧾 Format:
+.rename title, artist, album, cover_url
+
+📌 Example:
+.rename Starboy, The Weeknd, Starboy Album, https://i.imgur.com/cover.jpg
+
+⚡ You can also use:
+• Reply to WhatsApp audio
+• Reply to document file
+• Direct audio URL (mp3 links)
+
+🎨 Cover image is optional (URL only)`
+}, { quoted: message });
     }
 
     // ---------- Progress ----------
