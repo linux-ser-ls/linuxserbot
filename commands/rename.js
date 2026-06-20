@@ -51,7 +51,7 @@ try {
     fs.writeFileSync(filePath, buffer);
 
     // ---------- COVER IMAGE (FIXED PATH) ----------
-    const coverPath = path.join(__dirname, '../assets/bot_image.jpeg');
+    const coverPath = path.join(__dirname, './assets/bot_image.jpeg');
 
     let coverBuffer = null;
 
