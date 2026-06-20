@@ -72,15 +72,17 @@ async function urlCommand(sock, chatId, message) {
 
         if (!media) {
             await sock.sendMessage(chatId, {
-                text: `
-*📎 URL Converter*
-
-_❌ Please reply to or send media_
-
-_to generate a direct URL_
-
-_🌷 Try again ✨_
-`.trim()
+                text: `╭───❮ *ᴜʀʟ ᴄᴏɴᴠᴇʀᴛᴇʀ* ❯
+│
+├ ❌ ɴᴏ ᴍᴇᴅɪᴀ ꜰᴏᴜɴᴅ
+│
+├ 📎 ʀᴇᴘʟʏ ᴛᴏ ᴀɴ ɪᴍᴀɢᴇ,
+├ 🎵 ᴀᴜᴅɪᴏ, ᴠɪᴅᴇᴏ ᴏʀ ꜰɪʟᴇ
+│
+├ 🔗 ᴛᴏ ɢᴇɴᴇʀᴀᴛᴇ
+├ 🌐 ᴀ ᴅɪʀᴇᴄᴛ ᴜʀʟ
+│
+╰─────────────⦁`.trim()
             }, { quoted: message });
 
             return;
@@ -145,15 +147,17 @@ _🌷 Try again ✨_
             });
 
             await sock.sendMessage(chatId, {
-                text: `
-*❌ Upload Failed*
-
-_⚠️ Unable to upload media_
-
-_📌 Please try again later_
-
-_🌷 Retry again ✨_
-`.trim()
+                text: `╭───❮ *ᴜʀʟ ᴄᴏɴᴠᴇʀᴛᴇʀ* ❯
+│
+├ ❌ ᴜᴘʟᴏᴀᴅ ꜰᴀɪʟᴇᴅ
+│
+├ ⚠️ ᴜɴᴀʙʟᴇ ᴛᴏ
+├ 📤 ᴜᴘʟᴏᴀᴅ ᴍᴇᴅɪᴀ
+│
+├ 🔄 ᴘʟᴇᴀꜱᴇ ᴛʀʏ
+├ ⏳ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ
+│
+╰─────────────⦁`.trim()
             }, { quoted: message });
 
             return;
@@ -164,13 +168,16 @@ _🌷 Retry again ✨_
             react: { text: '✅', key: message.key }
         });
 
-        const stylishMessage = `
-*🔗 Media URL*
-
-_📎 Your file has been uploaded successfully_
-
-_🌐 URL: ${url}_
-`.trim();
+        const stylishMessage = `╭───❮ *ᴜʀʟ ᴄᴏɴᴠᴇʀᴛᴇʀ* ❯
+│
+├ ✅ ᴜᴘʟᴏᴀᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟ
+│
+├ 📎 ʏᴏᴜʀ ꜰɪʟᴇ ʜᴀꜱ
+├ 📤 ʙᴇᴇɴ ᴜᴘʟᴏᴀᴅᴇᴅ
+│
+├ 🌐 ᴜʀʟ: ${url}
+│
+╰─────────────⦁`.trim();
 
         await sock.sendMessage(chatId, {
             text: stylishMessage
@@ -185,15 +192,17 @@ _🌐 URL: ${url}_
         });
 
         await sock.sendMessage(chatId, {
-            text: `
-*❌ Error*
-
-_⚠️ Failed to convert media into URL_
-
-_📌 Please try again_
-
-_🌷 Something went wrong ✨_
-`.trim()
+            text: `╭───❮ *ᴜʀʟ ᴄᴏɴᴠᴇʀᴛᴇʀ* ❯
+│
+├ ❌ ᴄᴏɴᴠᴇʀꜱɪᴏɴ ꜰᴀɪʟᴇᴅ
+│
+├ ⚠️ ᴜɴᴀʙʟᴇ ᴛᴏ
+├ 🔗 ɢᴇɴᴇʀᴀᴛᴇ ᴜʀʟ
+│
+├ 🔄 ᴘʟᴇᴀꜱᴇ ᴛʀʏ
+├ ⏳ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ
+│
+╰─────────────⦁`.trim()
         }, { quoted: message });
     }
 }
