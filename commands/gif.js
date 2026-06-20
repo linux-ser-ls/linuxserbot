@@ -41,13 +41,13 @@ Reply to a video with:
     const duration =
         quoted.videoMessage.seconds || 0;
 
-    if (duration > 30) {
+    if (duration > 60) {
         return await sock.sendMessage(
             chatId,
             {
                 text:
 
-'❌ Video must be under 30 seconds.'
+'❌ Video must be under 1 minutes.'
 },
 { quoted: message }
 );
