@@ -25,37 +25,69 @@ async function anticallCommand(sock, chatId, message, args) {
     const sub = (args || '').trim().toLowerCase();
 
     if (!sub || (sub !== 'on' && sub !== 'off' && sub !== 'status')) {
-        await sock.sendMessage(chatId, {
-    text: `📞✨ *Anticall Control*
+        // Usage Message
+await sock.sendMessage(chatId, {
+    text: `╭━━━〔 📞 ᴀɴᴛɪᴄᴀʟʟ 〕━━━╮
+┃
+┣ 🔹 ᴏɴ
+┣ 🔹 ᴏꜰꜰ
+┣ 📊 ꜱᴛᴀᴛᴜꜱ
+┃
+╰━━━━━━━━━━━━━━━╯
 
-🛡️ *.anticall on*
-_↳ Enable auto-block for incoming calls_
-
-🔓 *.anticall off*
-_↳ Disable anticall protection_
-
-📊 *.anticall status*
-_↳ View the current anticall status_
-
-_🌷 Keep your bot safe from unwanted calls ✨_`
+╭─❍「 📚 ᴜꜱᴀɢᴇ ɢᴜɪᴅᴇ 」
+│
+├ 🛠️ ᴄᴏᴍᴍᴀɴᴅ: .ᴀɴᴛɪᴄᴀʟʟ
+│
+├ 📖 ᴅᴇꜱᴄʀɪᴘᴛɪᴏɴ:
+│   ᴍᴀɴᴀɢᴇ ᴀɴᴛɪᴄᴀʟʟ ꜱᴇᴛᴛɪɴɢꜱ
+│
+├ ⚡ ᴇxᴀᴍᴘʟᴇꜱ:
+│   .ᴀɴᴛɪᴄᴀʟʟ ᴏɴ
+│   .ᴀɴᴛɪᴄᴀʟʟ ᴏꜰꜰ
+│   .ᴀɴᴛɪᴄᴀʟʟ ꜱᴛᴀᴛᴜꜱ
+│
+╰───────────────❍`
 }, { quoted: message });
         return;
     }
 
     if (sub === 'status') {
     await sock.sendMessage(chatId, {
-        text: `📊 *_Anticall Status_*: ${state.enabled ? '_✅ Enabled_' : '_❌ Disabled_'}`
-    }, { quoted: message });
+    text: `╭━━━〔 📊 ᴀɴᴛɪᴄᴀʟʟ ꜱᴛᴀᴛᴜꜱ 〕━━━╮
+┃
+┣ ⚡ ꜱᴛᴀᴛᴜꜱ :${state.enabled ? '✅ ᴇɴᴀʙʟᴇᴅ' : '❌ ᴅɪꜱᴀʙʟᴇᴅ'}
+┃
+╰━━━━━━━━━━━━━━━━━━╯`
+}, { quoted: message });
     return;
 }
 
     const enable = sub === 'on';
     writeState(enable);
-    await sock.sendMessage(chatId, {
-    text: enable
-        ? '🛡️ *Anticall Enabled ✅*\n\n📞 _Incoming calls will now be blocked_'
-        : '🔓 *Anticall Disabled ❌*\n\n📞 _Incoming calls are no longer being blocked_'
+    const enable = sub === 'on';
+writeState(enable);
+
+await sock.sendMessage(chatId, {
+text: enable
+? `╭───❮ *ᴀɴᴛɪᴄᴀʟʟ* ❯
+│
+├ ✅ ᴇɴᴀʙʟᴇᴅ
+│
+├ 📞 ɪɴᴄᴏᴍɪɴɢ ᴄᴀʟʟꜱ
+├ 🚫 ᴡɪʟʟ ʙᴇ ʙʟᴏᴄᴋᴇᴅ
+│
+╰─────────────⦁`
+: `╭───❮ *ᴀɴᴛɪᴄᴀʟʟ* ❯
+│
+├ ❌ ᴅɪꜱᴀʙʟᴇᴅ
+│
+├ 📞 ɪɴᴄᴏᴍɪɴɢ ᴄᴀʟʟꜱ
+├ 🔓 ᴀʀᴇ ɴᴏᴡ ᴀʟʟᴏᴡᴇᴅ
+│
+╰─────────────⦁`
 }, { quoted: message });
+
 }
 
 module.exports = { anticallCommand, readState };
