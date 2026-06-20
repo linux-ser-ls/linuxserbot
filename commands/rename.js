@@ -52,25 +52,27 @@ try {
     const filePath = path.join('./temp', `${Date.now()}.mp3`);
     fs.writeFileSync(filePath, buffer);
 
-    // ---------- COVER IMAGE ----------
+    // ---------- COVER FIX (IMPORTANT) ----------
     const coverPath = path.join(__dirname, 'assets', 'bot_image.jpg');
 
     let coverBuffer = null;
+
     if (fs.existsSync(coverPath)) {
         coverBuffer = fs.readFileSync(coverPath);
     }
 
-    // ---------- TAGS (FIXED NODEID3 FORMAT) ----------
+    // ---------- ID3 TAGS (FIXED) ----------
     const tags = {
         title: '♪ 𝐕ɪʙᴇ 𝐁ʏ 𝐋ꜱ',
         artist: '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓',
         album: '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓',
+
         APIC: coverBuffer
             ? {
                 mime: 'image/jpeg',
                 type: 3,
                 description: 'cover',
-                imageBuffer: coverBuffer
+                data: coverBuffer   // ✅ FIXED FIELD (MOST IMPORTANT)
             }
             : undefined
     };
