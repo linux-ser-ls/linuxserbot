@@ -3,7 +3,6 @@ const path = require('path');
 const NodeID3 = require('node-id3');
 const { downloadMediaMessage } = require('@whiskeysockets/baileys');
 
-// ---------- MAIN ----------
 async function renameCommand(sock, chatId, message, text = '') {
 
 try {
@@ -29,7 +28,7 @@ try {
 
     if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
 
-    // ---------- DOWNLOAD MEDIA ----------
+    // ---------- DOWNLOAD ----------
     const buffer = await downloadMediaMessage(
         {
             key: message.key,
@@ -50,16 +49,15 @@ try {
     const filePath = path.join('./temp', `${Date.now()}.mp3`);
     fs.writeFileSync(filePath, buffer);
 
-    // ---------- COVER IMAGE (FIXED PATH) ----------
-    const coverPath = path.join(__dirname, './assets/bot_image.jpeg');
+    // ---------- COVER IMAGE (STABLE PATH) ----------
+    const coverPath = path.join(__dirname, '../assets/bot_image.jpeg');
 
     let coverBuffer = null;
-
     if (fs.existsSync(coverPath)) {
         coverBuffer = fs.readFileSync(coverPath);
     }
 
-    // ---------- TAGS (FIXED NODEID3 FORMAT) ----------
+    // ---------- IMPORTANT: NODEID3 COMPAT FORMAT ----------
     const tags = {
         title: '♪ 𝐕ɪʙᴇ 𝐁ʏ 𝐋ꜱ',
         artist: '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓',
@@ -69,8 +67,8 @@ try {
             ? {
                 mime: 'image/jpeg',
                 type: 3,
-                description: 'cover',
-                imageBuffer: coverBuffer   // ✔ REQUIRED FOR COVER
+                description: 'Cover',
+                data: coverBuffer   // ⭐ THIS IS THE MOST COMPATIBLE FIELD
             }
             : undefined
     };
