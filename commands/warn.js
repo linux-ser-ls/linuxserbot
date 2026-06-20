@@ -19,6 +19,15 @@ function initializeWarningsFile() {
     }
 }
 
+function getISTTime() {
+    return new Date().toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        dateStyle: 'short',
+        timeStyle: 'medium',
+        hour12: true
+    });
+}
+
 async function warnCommand(sock, chatId, senderId, mentionedJids, message) {
     try {
         // Initialize files first
@@ -98,7 +107,7 @@ async function warnCommand(sock, chatId, senderId, mentionedJids, message) {
                 `👤 *Warned User:* @${userToWarn.split('@')[0]}\n` +
                 `⚠️ *Warning Count:* ${warnings[chatId][userToWarn]}/3\n` +
                 `👑 *Warned By:* @${senderId.split('@')[0]}\n\n` +
-                `📅 *Date:* ${new Date().toLocaleString()}`;
+                `📅 *Date:* ${getISTTime()}`
 
             await sock.sendMessage(chatId, { 
                 text: warningMessage,
