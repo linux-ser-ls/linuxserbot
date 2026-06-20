@@ -8,7 +8,6 @@ async function renameCommand(sock, chatId, message, text = '') {
 
 try {
 
-    // ---------- CHECK MEDIA ----------
     const context = message.message?.extendedTextMessage?.contextInfo;
     const quoted = context?.quotedMessage;
 
@@ -24,9 +23,8 @@ try {
         }, { quoted: message });
     }
 
-    // ---------- STATUS ----------
     const progress = await sock.sendMessage(chatId, {
-        text: '🎵 Processing audio...'
+        text: '🎧 Processing audio...'
     }, { quoted: message });
 
     if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
@@ -52,8 +50,8 @@ try {
     const filePath = path.join('./temp', `${Date.now()}.mp3`);
     fs.writeFileSync(filePath, buffer);
 
-    // ---------- COVER FIX (IMPORTANT) ----------
-    const coverPath = path.join(__dirname, 'assets', 'bot_image.jpg');
+    // ---------- COVER IMAGE (FIXED PATH) ----------
+    const coverPath = path.join(__dirname, '../assets/bot_image.jpeg');
 
     let coverBuffer = null;
 
@@ -61,7 +59,7 @@ try {
         coverBuffer = fs.readFileSync(coverPath);
     }
 
-    // ---------- ID3 TAGS (FIXED) ----------
+    // ---------- TAGS (FIXED NODEID3 FORMAT) ----------
     const tags = {
         title: '♪ 𝐕ɪʙᴇ 𝐁ʏ 𝐋ꜱ',
         artist: '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓',
@@ -72,7 +70,7 @@ try {
                 mime: 'image/jpeg',
                 type: 3,
                 description: 'cover',
-                data: coverBuffer   // ✅ FIXED FIELD (MOST IMPORTANT)
+                imageBuffer: coverBuffer   // ✔ REQUIRED FOR COVER
             }
             : undefined
     };
