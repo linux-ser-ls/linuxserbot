@@ -38,59 +38,46 @@ async function downloadWhatsAppMedia(message, type = 'audio') {
     return buffer;
 }
 
-// ---------- Usage Message ----------
 const usageText = `🎧 *Rename Command Usage*
 
 .reply to audio/document OR use URL
 
 🧾 Format:
-.rename title, artist, album, cover_url
+.rename title, artist, album, url
 
 📌 Example:
-.rename Starboy, The Weeknd, Starboy Album, https://i.imgur.com/cover.jpg
+.rename Starboy, The Weeknd, Album, https://i.imgur.com/cover.jpg`;
 
-⚡ Supported:
-• WhatsApp audio reply
-• Document file reply
-• Direct MP3 URL
-
-🎨 Cover is optional`;
-
-// ---------- Main ----------
 async function renameCommand(sock, chatId, message, text = '') {
 try {
 
     const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     const msg = message.message;
 
-    const { title, artist, album, cover } = parseArgs(text);
-
     let buffer = null;
-    let sourceType = null;
+
+    const { title, artist, album, cover } = parseArgs(text);
 
     const firstArg = text.split(',')[0]?.trim();
 
-    // ---------- MEDIA DETECTION FIRST ----------
+    // ---------- STEP 1: DETECT INPUT ----------
     if (firstArg && isUrl(firstArg)) {
         buffer = await downloadUrlBuffer(firstArg);
-        sourceType = 'url';
     }
     else if (msg?.audioMessage || quoted?.audioMessage) {
         buffer = await downloadWhatsAppMedia(
             msg?.audioMessage || quoted?.audioMessage,
             'audio'
         );
-        sourceType = 'audio';
     }
     else if (msg?.documentMessage || quoted?.documentMessage) {
         buffer = await downloadWhatsAppMedia(
             msg?.documentMessage || quoted?.documentMessage,
             'document'
         );
-        sourceType = 'document';
     }
 
-    // ---------- INVALID INPUT ----------
+    // ---------- STEP 2: FAIL SAFE ----------
     if (!buffer) {
         await sock.sendMessage(chatId, {
             react: { text: "❌", key: message.key }
@@ -101,12 +88,11 @@ try {
         }, { quoted: message });
     }
 
-    // ---------- VALID COMMAND REACTION ONLY HERE ----------
+    // ---------- STEP 3: VALID COMMAND ----------
     await sock.sendMessage(chatId, {
         react: { text: "🎧", key: message.key }
     });
 
-    // ---------- TEMP FILE ----------
     if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
 
     const filePath = path.join('./temp', `${Date.now()}.mp3`);
@@ -114,6 +100,7 @@ try {
 
     // ---------- COVER ----------
     let coverBuffer = null;
+
     if (cover && isUrl(cover)) {
         try {
             const res = await axios.get(cover, {
@@ -123,15 +110,15 @@ try {
         } catch {}
     }
 
-    // ---------- TAGGING ----------
+    // ---------- TAG ----------
     NodeID3.write({
-        title: title || 'Unknown Title',
-        artist: artist || 'Unknown Artist',
-        album: album || 'Unknown Album',
+        title: title || 'Unknown',
+        artist: artist || 'Unknown',
+        album: album || 'Unknown',
         image: coverBuffer || undefined
     }, filePath);
 
-    // ---------- SUCCESS ----------
+    // ---------- SEND ----------
     await sock.sendMessage(chatId, {
         react: { text: "✅", key: message.key }
     });
