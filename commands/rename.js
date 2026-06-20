@@ -4,7 +4,7 @@ const axios = require('axios');
 const NodeID3 = require('node-id3');
 const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 
-// ---------------- Helpers ----------------
+// ---------- Helpers ----------
 function parseArgs(text = '') {
     const parts = text.split(',').map(v => v.trim());
 
@@ -23,7 +23,7 @@ function isUrl(text = '') {
 async function downloadUrlBuffer(url) {
     const res = await axios.get(url, {
         responseType: 'arraybuffer',
-        timeout: 20000
+        timeout: 15000
     });
     return Buffer.from(res.data);
 }
@@ -39,23 +39,10 @@ async function downloadWA(message, type = 'audio') {
     return buffer;
 }
 
-// ---------------- Usage ----------------
-const usage = `🎧 *Rename Command Usage*
-
-.reply to audio/document OR use URL
-
-🧾 Format:
-.rename title, artist, album, cover_url
-
-📌 Example:
-.rename Starboy, The Weeknd, Starboy Album, https://i.imgur.com/cover.jpg`;
-
-
-// ---------------- Main ----------------
+// ---------- MAIN ----------
 async function renameCommand(sock, chatId, message, text = '') {
 try {
 
-    // ALWAYS REACT START (so user knows bot is alive)
     await sock.sendMessage(chatId, {
         react: { text: "🎧", key: message.key }
     });
@@ -68,66 +55,60 @@ try {
 
     let buffer = null;
 
-    // ---------------- SAFE INPUT DETECTION ----------------
+    const firstArg = text.split(',')[0]?.trim();
 
-    try {
-        // CASE 1: URL INPUT (first argument only)
-        const firstArg = text.split(',')[0]?.trim();
-
-        if (firstArg && isUrl(firstArg)) {
-            buffer = await downloadUrlBuffer(firstArg);
-        }
-
-        // CASE 2: WhatsApp audio reply
-        else if (message.message?.audioMessage || quoted?.audioMessage) {
-            buffer = await downloadWA(
-                message.message?.audioMessage || quoted?.audioMessage,
-                'audio'
-            );
-        }
-
-        // CASE 3: WhatsApp document reply
-        else if (message.message?.documentMessage || quoted?.documentMessage) {
-            buffer = await downloadWA(
-                message.message?.documentMessage || quoted?.documentMessage,
-                'document'
-            );
-        }
-
-    } catch (e) {
-        console.log("Media detection error:", e.message);
+    // ---------- URL INPUT ----------
+    if (firstArg && isUrl(firstArg)) {
+        buffer = await downloadUrlBuffer(firstArg);
     }
 
-    // ---------------- NO MEDIA FOUND ----------------
+    // ---------- WA AUDIO ----------
+    else if (message.message?.audioMessage || quoted?.audioMessage) {
+        buffer = await downloadWA(
+            message.message?.audioMessage || quoted?.audioMessage,
+            'audio'
+        );
+    }
+
+    // ---------- WA DOCUMENT ----------
+    else if (message.message?.documentMessage || quoted?.documentMessage) {
+        buffer = await downloadWA(
+            message.message?.documentMessage || quoted?.documentMessage,
+            'document'
+        );
+    }
+
     if (!buffer) {
         await sock.sendMessage(chatId, {
             react: { text: "❌", key: message.key }
         });
 
         return sock.sendMessage(chatId, {
-            text: usage
+            text: `🎧 Reply to audio/document OR use URL`
         }, { quoted: message });
     }
 
-    // ---------------- PROCESS ----------------
+    // ---------- SAVE FILE ----------
     const filePath = path.join('./temp', `${Date.now()}.mp3`);
     fs.writeFileSync(filePath, buffer);
 
-    // ---------------- COVER ----------------
+    // ---------- COVER IMAGE (FIXED) ----------
     let coverBuffer = null;
 
     if (cover && isUrl(cover)) {
         try {
             const res = await axios.get(cover, {
-                responseType: 'arraybuffer'
+                responseType: 'arraybuffer',
+                timeout: 15000
             });
+
             coverBuffer = Buffer.from(res.data);
-        } catch (e) {
-            console.log("Cover error ignored");
+        } catch (err) {
+            console.log("⚠️ Cover URL failed, skipping...");
         }
     }
 
-    // ---------------- TAG ----------------
+    // ---------- TAGGING ----------
     NodeID3.write({
         title,
         artist,
@@ -135,7 +116,7 @@ try {
         image: coverBuffer || undefined
     }, filePath);
 
-    // ---------------- SUCCESS ----------------
+    // ---------- SUCCESS ----------
     await sock.sendMessage(chatId, {
         react: { text: "✅", key: message.key }
     });
@@ -149,17 +130,15 @@ try {
     fs.unlinkSync(filePath);
 
 } catch (err) {
-
-    console.error("Rename Error:", err);
+    console.error(err);
 
     await sock.sendMessage(chatId, {
         react: { text: "❌", key: message.key }
     });
 
-    return sock.sendMessage(chatId, {
+    await sock.sendMessage(chatId, {
         text: `❌ Error:\n${err.message}`
     }, { quoted: message });
-
 }
 
 }
