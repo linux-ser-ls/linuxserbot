@@ -1,10 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const NodeID3 = require('node-id3');
 const axios = require('axios');
-const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
+const NodeID3 = require('node-id3');
+const {
+    downloadContentFromMessage
+} = require('@whiskeysockets/baileys');
 
-function parseArgs(text) {
+// ---------- Helpers ----------
+function parseArgs(text = '') {
     const parts = text.split(',').map(v => v.trim());
     return {
         title: parts[0] || 'Unknown Title',
@@ -14,72 +17,99 @@ function parseArgs(text) {
     };
 }
 
-async function getMediaBuffer(message, type = 'audio') {
-    const stream = await downloadContentFromMessage(message, type);
+function isUrl(text = '') {
+    return /^https?:\/\//i.test(text);
+}
 
+async function downloadUrlBuffer(url) {
+    const res = await axios.get(url, {
+        responseType: 'arraybuffer',
+        timeout: 15000
+    });
+    return Buffer.from(res.data);
+}
+
+async function downloadWhatsAppMedia(message, type = 'audio') {
+    const stream = await downloadContentFromMessage(message, type);
     let buffer = Buffer.from([]);
+
     for await (const chunk of stream) {
         buffer = Buffer.concat([buffer, chunk]);
     }
+
     return buffer;
 }
 
-async function renameCommand(sock, chatId, message, text) {
+// ---------- Main Command ----------
+async function renameCommand(sock, chatId, message, text = '') {
 try {
 
-    if (!text) {
-        return sock.sendMessage(chatId, {
-            text: '❌ Usage: .rename title, artist, album, coverUrl'
-        }, { quoted: message });
+    if (!fs.existsSync('./temp')) {
+        fs.mkdirSync('./temp');
     }
 
+    // ---------- Parse metadata ----------
     const { title, artist, album, cover } = parseArgs(text);
 
+    let buffer;
+    let fileName = `${Date.now()}.mp3`;
+
+    // ---------- Detect quoted message ----------
     const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     const msg = quoted || message.message;
 
-    let mediaType = null;
     let mediaMsg = null;
+    let mediaType = null;
 
-    // Detect audio or document
-    if (msg?.audioMessage) {
-        mediaType = 'audio';
-        mediaMsg = msg.audioMessage;
-    } 
-    else if (msg?.documentMessage) {
-        mediaType = 'document';
-        mediaMsg = msg.documentMessage;
+    // ---------- CASE 1: URL input ----------
+    if (isUrl(text)) {
+        buffer = await downloadUrlBuffer(text);
+        mediaType = 'url';
     }
+
+    // ---------- CASE 2: WhatsApp media ----------
+    else if (msg?.audioMessage) {
+        mediaMsg = msg.audioMessage;
+        mediaType = 'audio';
+        buffer = await downloadWhatsAppMedia(mediaMsg, 'audio');
+    }
+
+    else if (msg?.documentMessage) {
+        mediaMsg = msg.documentMessage;
+        mediaType = 'document';
+        buffer = await downloadWhatsAppMedia(mediaMsg, 'document');
+    }
+
     else {
         return sock.sendMessage(chatId, {
-            text: '❌ Reply to an audio or document file.'
+            text: '❌ Reply to audio/document OR provide a valid URL.'
         }, { quoted: message });
     }
 
+    // ---------- Progress ----------
     const status = await sock.sendMessage(chatId, {
-        text: '🎵 Processing file...'
+        text: '🎧 Processing media...'
     }, { quoted: message });
 
-    // download media
-    const buffer = await getMediaBuffer(mediaMsg, mediaType);
-
-    if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
-
-    const filePath = `./temp/${Date.now()}.mp3`;
+    // ---------- Save file ----------
+    const filePath = path.join('./temp', fileName);
     fs.writeFileSync(filePath, buffer);
 
-    // cover image buffer
+    // ---------- Cover image ----------
     let coverBuffer = null;
-    if (cover) {
+
+    if (cover && isUrl(cover)) {
         try {
-            const res = await axios.get(cover, { responseType: 'arraybuffer' });
+            const res = await axios.get(cover, {
+                responseType: 'arraybuffer'
+            });
             coverBuffer = Buffer.from(res.data);
         } catch (e) {
-            console.log('Cover load failed, ignoring...');
+            console.log('⚠️ Cover download failed, skipping...');
         }
     }
 
-    // apply ID3 tags (only meaningful for audio)
+    // ---------- ID3 tagging ----------
     const tags = {
         title,
         artist,
@@ -89,8 +119,9 @@ try {
 
     NodeID3.write(tags, filePath);
 
+    // ---------- Send result ----------
     await sock.sendMessage(chatId, {
-        text: '✅ File renamed & tagged successfully!',
+        text: '✅ Renamed & tagged successfully!',
         edit: status.key
     });
 
