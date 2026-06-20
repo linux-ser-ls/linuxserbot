@@ -468,9 +468,6 @@ async function handleMessages(sock, messageUpdate, printLog) {
              );
                 commandExecuted = true;
                 break;
-            case userMessage === '.rename':
-                await renameCommand(sock, chatId, message);
-                break;
             case userMessage.startsWith('.delete') || userMessage.startsWith('.del'):
                 await deleteCommand(sock, chatId, message, senderId);
                 break;
@@ -907,6 +904,14 @@ break;
                     await setMentionCommand(sock, chatId, message, isOwner);
                 }
                 break;
+            const text = (userMessage || '').trim();
+            const cmd = text.split(' ')[0].toLowerCase();
+            const args = text.slice(cmd.length).trim();
+            switch (cmd) {
+            case '.rename':
+                await renameCommand(sock, chatId, message, args);
+                break;
+               }
             case userMessage.startsWith('.blur'):
                 const blurQuotedMessage = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
                 await blurCommand(sock, chatId, message, blurQuotedMessage);
