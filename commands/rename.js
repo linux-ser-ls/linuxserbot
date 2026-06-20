@@ -59,11 +59,31 @@ try {
         image: imageBuffer
     };
 
-    // write tags into the mp3
-    NodeID3.write(tagsToWrite, audioPath);
+    // NOTE: WhatsApp may ignore ID3/APIC on some incoming MP3s.
+    // Re-encode first to create a clean MP3 stream, then write tags.
+    const ffmpeg = require('fluent-ffmpeg');
 
-    // debug (optional): read back tags after writing
-    const writtenTags = NodeID3.read(audioPath);
+    const tempReencodedPath = './temp/linuxser_tagged.mp3';
+
+    await new Promise((resolve, reject) => {
+        ffmpeg(audioPath)
+            .noVideo()
+            .audioCodec('libmp3lame')
+            .audioBitrate('192k')
+            .audioFrequency(44100)
+            .format('mp3')
+            .on('end', resolve)
+            .on('error', reject)
+            .save(tempReencodedPath);
+    });
+
+    NodeID3.write(tagsToWrite, tempReencodedPath);
+
+    const writtenTags = NodeID3.read(tempReencodedPath);
+
+    fs.writeFileSync(audioPath, fs.readFileSync(tempReencodedPath));
+    fs.unlinkSync(tempReencodedPath);
+
 
     await sock.sendMessage(chatId, {
 
@@ -71,17 +91,21 @@ try {
         edit: progressMsg.key
     });
 
+    // WhatsApp clients may show the title from filename more than from ID3 tags.
+    const safeTitle = 'Linux Ser';
+    const fileName = `${safeTitle}.mp3`;
+
     await sock.sendMessage(
         chatId,
         {
             audio: fs.readFileSync(audioPath),
             mimetype: 'audio/mpeg',
             ptt: false,
-            // name can help some clients display tags more consistently
-            fileName: 'linuxser.mp3'
+            fileName
         },
         { quoted: message }
     );
+
 
     fs.unlinkSync(audioPath);
 
