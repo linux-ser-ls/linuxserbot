@@ -7,12 +7,11 @@ const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 // ---------- Helpers ----------
 function parseArgs(text = '') {
     const parts = text.split(',').map(v => v.trim());
-
     return {
-        title: parts[0] || 'Unknown Title',
-        artist: parts[1] || 'Unknown Artist',
-        album: parts[2] || 'Unknown Album',
-        cover: parts[3] || null
+        title: parts[0],
+        artist: parts[1],
+        album: parts[2],
+        cover: parts[3]
     };
 }
 
@@ -39,55 +38,8 @@ async function downloadWhatsAppMedia(message, type = 'audio') {
     return buffer;
 }
 
-// ---------- Main Command ----------
-async function renameCommand(sock, chatId, message, text = '') {
-try {
-
-    await sock.sendMessage(chatId, { react: { text: "🎧", key: message.key } });
-
-    if (!fs.existsSync('./temp')) {
-        fs.mkdirSync('./temp');
-    }
-
-    const { title, artist, album, cover } = parseArgs(text);
-
-    let buffer;
-    let fileName = `${Date.now()}.mp3`;
-
-    const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-
-    const msg = message.message;
-
-    let mediaMsg = null;
-    let mediaType = null;
-
-    // ---------- URL DETECTION (SAFE) ----------
-    const firstArg = text.split(',')[0]?.trim();
-
-    if (firstArg && isUrl(firstArg)) {
-        buffer = await downloadUrlBuffer(firstArg);
-        mediaType = 'url';
-    }
-
-    // ---------- WhatsApp Audio ----------
-    else if (msg?.audioMessage || quoted?.audioMessage) {
-        mediaMsg = msg?.audioMessage || quoted?.audioMessage;
-        buffer = await downloadWhatsAppMedia(mediaMsg, 'audio');
-        mediaType = 'audio';
-    }
-
-    // ---------- WhatsApp Document ----------
-    else if (msg?.documentMessage || quoted?.documentMessage) {
-        mediaMsg = msg?.documentMessage || quoted?.documentMessage;
-        buffer = await downloadWhatsAppMedia(mediaMsg, 'document');
-        mediaType = 'document';
-    }
-
-    else {
-        await sock.sendMessage(chatId, { react: { text: "❌", key: message.key } });
-
-        return sock.sendMessage(chatId, {
-            text: `🎧 *Rename Command Usage*
+// ---------- Usage Message ----------
+const usageText = `🎧 *Rename Command Usage*
 
 .reply to audio/document OR use URL
 
@@ -97,64 +49,103 @@ try {
 📌 Example:
 .rename Starboy, The Weeknd, Starboy Album, https://i.imgur.com/cover.jpg
 
-⚡ You can also use:
-• Reply to WhatsApp audio
-• Reply to document file
-• Direct audio URL (mp3 links)
+⚡ Supported:
+• WhatsApp audio reply
+• Document file reply
+• Direct MP3 URL
 
-🎨 Cover image is optional (URL only)`
+🎨 Cover is optional`;
+
+// ---------- Main ----------
+async function renameCommand(sock, chatId, message, text = '') {
+try {
+
+    const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+    const msg = message.message;
+
+    const { title, artist, album, cover } = parseArgs(text);
+
+    let buffer = null;
+    let sourceType = null;
+
+    const firstArg = text.split(',')[0]?.trim();
+
+    // ---------- MEDIA DETECTION FIRST ----------
+    if (firstArg && isUrl(firstArg)) {
+        buffer = await downloadUrlBuffer(firstArg);
+        sourceType = 'url';
+    }
+    else if (msg?.audioMessage || quoted?.audioMessage) {
+        buffer = await downloadWhatsAppMedia(
+            msg?.audioMessage || quoted?.audioMessage,
+            'audio'
+        );
+        sourceType = 'audio';
+    }
+    else if (msg?.documentMessage || quoted?.documentMessage) {
+        buffer = await downloadWhatsAppMedia(
+            msg?.documentMessage || quoted?.documentMessage,
+            'document'
+        );
+        sourceType = 'document';
+    }
+
+    // ---------- INVALID INPUT ----------
+    if (!buffer) {
+        await sock.sendMessage(chatId, {
+            react: { text: "❌", key: message.key }
+        });
+
+        return sock.sendMessage(chatId, {
+            text: usageText
         }, { quoted: message });
     }
 
-    // ---------- Processing ----------
-    const status = await sock.sendMessage(chatId, {
-        text: '🎧 Processing media...'
-    }, { quoted: message });
+    // ---------- VALID COMMAND REACTION ONLY HERE ----------
+    await sock.sendMessage(chatId, {
+        react: { text: "🎧", key: message.key }
+    });
 
-    // ---------- Save ----------
-    const filePath = path.join('./temp', fileName);
+    // ---------- TEMP FILE ----------
+    if (!fs.existsSync('./temp')) fs.mkdirSync('./temp');
+
+    const filePath = path.join('./temp', `${Date.now()}.mp3`);
     fs.writeFileSync(filePath, buffer);
 
-    // ---------- Cover ----------
+    // ---------- COVER ----------
     let coverBuffer = null;
-
     if (cover && isUrl(cover)) {
         try {
-            const res = await axios.get(cover, { responseType: 'arraybuffer' });
+            const res = await axios.get(cover, {
+                responseType: 'arraybuffer'
+            });
             coverBuffer = Buffer.from(res.data);
-        } catch {
-            console.log('⚠️ Cover load failed');
-        }
+        } catch {}
     }
 
-    // ---------- ID3 ----------
+    // ---------- TAGGING ----------
     NodeID3.write({
-        title,
-        artist,
-        album,
+        title: title || 'Unknown Title',
+        artist: artist || 'Unknown Artist',
+        album: album || 'Unknown Album',
         image: coverBuffer || undefined
     }, filePath);
 
-    // ---------- Success ----------
+    // ---------- SUCCESS ----------
     await sock.sendMessage(chatId, {
         react: { text: "✅", key: message.key }
     });
 
     await sock.sendMessage(chatId, {
-        text: '🎉 Renamed & tagged successfully!',
-        edit: status.key
-    });
-
-    await sock.sendMessage(chatId, {
         audio: fs.readFileSync(filePath),
         mimetype: 'audio/mpeg',
-        fileName: `${title}.mp3`
+        fileName: `${title || 'audio'}.mp3`
     }, { quoted: message });
 
     fs.unlinkSync(filePath);
 
 } catch (err) {
-    console.error('Rename Error:', err);
+    console.error(err);
 
     await sock.sendMessage(chatId, {
         react: { text: "❌", key: message.key }
