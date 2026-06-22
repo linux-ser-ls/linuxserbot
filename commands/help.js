@@ -48,18 +48,14 @@ const time = istTime
     } 
     
     const pushName = message.pushName || 'User';
-    const totalPlugins = helpMessage
-    .split('\n')
-    .filter(line => line.trim().startsWith('│'))
-    .length;
-
+ 
     const helpMessage = `╭───❮ *𝐋ɪɴᴜx-𝐒ᴇʀ* ❯
 │ *ᴛɪᴍᴇ* :   ${time}
 │ *ᴅᴀᴛᴇ* :  ${date}
 │ *ᴏᴡɴᴇʀ* :  ${settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓'}
 │ *ᴜꜱᴇʀ* :  ${pushName}
 │ *ᴘʀᴇғɪx* : .
-│ *ᴘʟᴜɢɪɴꜱ* : ${totalPlugins}
+│ *ᴘʟᴜɢɪɴꜱ* : ${TOTAL_PLUGINS}
 │ *ʀᴜɴᴛɪᴍᴇ* : ${runtime()}
 ╰─────────────⦁
 ╭───❮ *ɢᴇɴᴇʀᴀʟ* ❯
@@ -271,6 +267,24 @@ const time = istTime
 ╰─────────────⦁
 `;
 
+    const totalPlugins = helpMessage
+    .split('\n')
+    .filter(line => {
+        line = line.trim();
+
+        return (
+            line.startsWith('│') &&
+            !line.includes('*') &&
+            !line.includes(':') &&
+            !line.startsWith('│ ⚡')
+        );
+    })
+    .length;
+
+helpMessage = helpMessage.replace(
+    '{TOTAL_PLUGINS}',
+    totalPlugins
+);
     try {
 
         const imagePath = path.join(
