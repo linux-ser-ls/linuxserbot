@@ -164,8 +164,8 @@ async function songCommand(
 				'';
 
 			text = text
-				.replace(/^\.song\s*/i, '')
-				.trim();
+              .replace(/^\.(song|ytmp3)\s*/i, '')
+              .trim();
 		}
 
 		// ================= EMPTY QUERY =================
