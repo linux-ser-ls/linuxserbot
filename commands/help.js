@@ -9,35 +9,6 @@ async function helpCommand(sock, chatId, message) {
         react: { text: '📃', key: message.key }
     });
 
-    function countCommands(menuText) {
-    return menuText
-        .split('\n')
-        .filter(line => {
-            line = line.trim();
-
-            // must start with │
-            if (!line.startsWith('│')) return false;
-
-            // remove │
-            const cmd = line.replace(/^│\s*/, '').trim();
-
-            // ignore info lines
-            if (
-                cmd.includes('*') ||
-                cmd.includes(':') ||
-                cmd.startsWith('⚡') ||
-                cmd.includes('ᴛɪᴍᴇ') ||
-                cmd.includes('ᴅᴀᴛᴇ') ||
-                cmd.includes('ᴏᴡɴᴇʀ') ||
-                cmd.includes('ᴜꜱᴇʀ') ||
-                cmd.includes('ᴘʀᴇғɪx') ||
-                cmd.includes('ᴘʟᴜɢɪɴꜱ') ||
-                cmd.includes('ʀᴜɴᴛɪᴍᴇ')
-            ) return false;
-
-            return true;
-        }).length;
-    }
 
     // --- Fixed Indian Date & Time Logic ---
 const now = new Date();
@@ -77,7 +48,10 @@ const time = istTime
     } 
     
     const pushName = message.pushName || 'User';
-    const totalPlugins = countCommands(helpMessage);
+    const totalPlugins = helpMessage
+    .split('\n')
+    .filter(line => line.trim().startsWith('│'))
+    .length;
 
     const helpMessage = `╭───❮ *𝐋ɪɴᴜx-𝐒ᴇʀ* ❯
 │ *ᴛɪᴍᴇ* :   ${time}
