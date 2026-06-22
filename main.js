@@ -148,6 +148,7 @@ const { startQuizPoll, revealQuizAnswer } = require('./commands/quiz');
 const renameCommand = require('./commands/rename');
 const wikipediaCommand = require('./commands/wikipedia');
 const gifCommand = require('./commands/gif');
+const ytmp3Command = require('./commands/ytmp3');
 
 // Global settings
 global.packname = settings.packname;
@@ -1159,11 +1160,14 @@ break;
             case userMessage.startsWith('.fb') || userMessage.startsWith('.facebook'):
                 await facebookCommand(sock, chatId, message);
                 break;
-            case userMessage.startsWith('.mp3') || userMessage.startsWith('.ytmp3') || userMessage.startsWith('.song'):
+            case userMessage.startsWith('.mp3') || userMessage.startsWith('.song'):
                 await songCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.play'):
                 await playCommand(sock, chatId, message);
+                break;
+            case userMessage.startsWith('.ytmp3'):
+                await ytmp3Command(sock, chatId, message);
                 break;
             case userMessage === '.find':
                 await findCommand(sock, chatId, message);
