@@ -38,7 +38,6 @@ async function helpCommand(sock, chatId, message) {
             return true;
         }).length;
     }
-    const totalPlugins = countCommands(helpMessage);
 
     // --- Fixed Indian Date & Time Logic ---
 const now = new Date();
@@ -296,6 +295,8 @@ const time = istTime
 │             𝐋ɪɴᴜx ꜱᴇʀ 🧃🕊️
 ╰─────────────⦁
 `;
+
+    const totalPlugins = countCommands(helpMessage);
 
     try {
 
