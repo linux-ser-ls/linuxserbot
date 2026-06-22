@@ -55,7 +55,7 @@ const time = istTime
 │ *ᴏᴡɴᴇʀ* :  ${settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓'}
 │ *ᴜꜱᴇʀ* :  ${pushName}
 │ *ᴘʀᴇғɪx* : .
-│ *ᴘʟᴜɢɪɴꜱ* : ${TOTAL_PLUGINS}
+│ *ᴘʟᴜɢɪɴꜱ* : 175
 │ *ʀᴜɴᴛɪᴍᴇ* : ${runtime()}
 ╰─────────────⦁
 ╭───❮ *ɢᴇɴᴇʀᴀʟ* ❯
@@ -266,25 +266,6 @@ const time = istTime
 │             𝐋ɪɴᴜx ꜱᴇʀ 🧃🕊️
 ╰─────────────⦁
 `;
-
-    const totalPlugins = helpMessage
-    .split('\n')
-    .filter(line => {
-        line = line.trim();
-
-        return (
-            line.startsWith('│') &&
-            !line.includes('*') &&
-            !line.includes(':') &&
-            !line.startsWith('│ ⚡')
-        );
-    })
-    .length;
-
-helpMessage = helpMessage.replace(
-    '{TOTAL_PLUGINS}',
-    totalPlugins
-);
     try {
 
         const imagePath = path.join(
