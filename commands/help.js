@@ -9,11 +9,6 @@ async function helpCommand(sock, chatId, message) {
         react: { text: '📃', key: message.key }
     });
 
-    const pluginCount = fs
-    .readdirSync(path.join(__dirname, '../commands'))
-    .filter(file => file.endsWith('.js'))
-    .length;
-
     // --- Fixed Indian Date & Time Logic ---
 const now = new Date();
 
@@ -59,7 +54,7 @@ const time = istTime
 │ *ᴏᴡɴᴇʀ* :  ${settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓'}
 │ *ᴜꜱᴇʀ* :  ${pushName}
 │ *ᴘʀᴇғɪx* : .
-│ *ᴘʟᴜɢɪɴꜱ* : ${pluginCount}
+│ *ᴘʟᴜɢɪɴꜱ* : 175
 │ *ʀᴜɴᴛɪᴍᴇ* : ${runtime()}
 ╰─────────────⦁
 ╭───❮ *ɢᴇɴᴇʀᴀʟ* ❯
