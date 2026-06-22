@@ -200,22 +200,58 @@ _✨ Search • Download • Enjoy_`
 		// ================= SEARCH =================
 
 		if (
-			text.includes('youtube.com') ||
-			text.includes('youtu.be')
-		) {
+    text.includes('youtube.com') ||
+    text.includes('youtu.be')
+) {
 
-			video = {
-				url: text,
-				title: 'YouTube Audio',
-				thumbnail:
+    let ytUrl = text.trim();
+
+    const shortsMatch = ytUrl.match(
+        /youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/
+    );
+
+    if (shortsMatch) {
+        ytUrl = `https://www.youtube.com/watch?v=${shortsMatch[1]}`;
+    }
+
+    try {
+
+        const parsed = new URL(ytUrl);
+
+        if (parsed.hostname.includes('youtu.be')) {
+
+            const videoId =
+                parsed.pathname.replace('/', '');
+
+            ytUrl =
+                `https://www.youtube.com/watch?v=${videoId}`;
+
+        } else {
+
+            const videoId =
+                parsed.searchParams.get('v');
+
+            if (videoId) {
+
+                ytUrl =
+                    `https://www.youtube.com/watch?v=${videoId}`;
+            }
+        }
+
+    } catch {}
+
+    video = {
+        url: ytUrl,
+        title: 'YouTube Audio',
+        thumbnail:
 'https://i.imgur.com/7vQZ6oA.jpeg',
-				timestamp: 'Unknown',
-				author: {
-					name: 'Unknown Artist'
-				}
-			};
+        timestamp: 'Unknown',
+        author: {
+            name: 'Unknown Artist'
+        }
+    };
 
-		} else {
+} else {
 
 			await sock.sendMessage(chatId, {
 				react: {
