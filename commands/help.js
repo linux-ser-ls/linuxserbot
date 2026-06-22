@@ -1,6 +1,7 @@
-const fs = require("fs");
-const path = require("path");
-const { execSync } = require("child_process");
+const settings = require('../settings');
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
 
 // =========================
 // COMMAND CATEGORIES (RAW)
@@ -94,7 +95,7 @@ async function helpCommand(sock, chatId, message) {
 `╭───❮ 𝐋ɪɴᴜx-𝐒ᴇʀ ❯
 │ *ᴛɪᴍᴇ* : ${time}
 │ *ᴅᴀᴛᴇ* : ${date}
-│ *ᴏᴡɴᴇʀ* : 𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓
+│ *ᴏᴡɴᴇʀ* : ${settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓'}
 │ *ᴜꜱᴇʀ* : ${message.pushName || "User"}
 │ *ᴘʟᴜɢɪɴꜱ* : ${pluginCount}
 │ *ʀᴜɴᴛɪᴍᴇ* : ${runtime()}
