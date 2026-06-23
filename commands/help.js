@@ -7,19 +7,95 @@ const { execSync } = require('child_process');
 // COMMAND CATEGORIES (RAW)
 // =========================
 const commandCategories = {
-  general: ["menu", "ping", "alive", "owner", "runtime", "news", "8ball"],
-  admin: ["ban", "promote", "demote", "mute", "unmute", "kick"],
-  owner: ["mode", "clearsession", "update", "settings", "sudo"],
-  image: ["blur", "sticker", "crop", "emix", "igs", "igsc"],
-  converter: ["tts", "attp", "url", "toaudio", "gif", "rename"],
-  game: ["tictactoe", "hangman", "guess", "quiz", "truth", "dare"],
-  ai: ["imagine", "flux"],
-  fun: ["joke", "meme", "fact", "quote", "ship", "love"],
-  downloader: ["play", "song", "instagram", "tiktok", "ytmp4"],
-  tools: ["calc", "weather", "qrcode", "lyrics", "wiki"],
-  github: ["git", "repo", "script"]
-};
+  general: [
+    "menu", "ping", "alive", "owner", "runtime", "news", "8ball"
+  ],
 
+  admin: [
+    "ban", "promote", "demote", "admins", "mute", "unmute",
+    "delete", "kick", "warn", "unwarn", "warnings",
+    "antilink", "antitag", "antibadword",
+    "clear", "jid",
+    "tag", "tagall", "tagnotadmin", "hidetag",
+    "resetlink",
+    "welcome", "goodbye",
+    "setgpp", "setgname", "setgdesc",
+    "groupinfo", "topmembers"
+  ],
+
+  owner: [
+    "mode", "clearsession", "clearsessions",
+    "antidelete", "anticall",
+    "cleartmp",
+    "sudo", "update", "settings", "setpp",
+    "autoreact", "autostatus", "autostatusreact",
+    "autotyping", "autoread",
+    "pmlocker", "pmlocker_setmsg",
+    "setmention", "mention"
+  ],
+
+  image: [
+    "blur", "simage", "sticker", "crop", "take",
+    "emix", "igs", "igsc"
+  ],
+
+  converter: [
+    "tts", "attp", "url", "tovoice", "toaudio",
+    "gif", "cut", "bass", "slowed", "rename"
+  ],
+
+  game: [
+    "tictactoe", "hangman", "guess",
+    "trivia", "answer", "quiz", "quizanswer",
+    "truth", "dare"
+  ],
+
+  ai: [
+    "imagine", "flux"
+  ],
+
+  fun: [
+    "ship", "love", "teddy", "moon", "character",
+    "wasted", "joke", "meme", "fact", "quote",
+    "compliment", "insult", "flirt",
+    "readmore", "shayari",
+    "goodmorning", "goodnight",
+    "roseday", "simp", "stupid"
+  ],
+
+  downloader: [
+    "play", "song", "img",
+    "instagram", "facebook", "tiktok",
+    "video", "ytmp4"
+  ],
+
+  tools: [
+    "find", "calc", "weather", "birth",
+    "qrcode", "readqr", "lyrics", "wiki", "trt"
+  ],
+
+  aesthetic: [
+    "aesthetic", "bio", "instabio",
+    "caption", "nickname", "username", "symbol"
+  ],
+
+  misc: [
+    "heart", "horny", "circle", "lgbt",
+    "lolice", "its-so-stupid", "namecard",
+    "oogway", "tweet", "ytcomment",
+    "comrade", "gay", "glass",
+    "jail", "passed", "triggered"
+  ],
+
+  anime: [
+    "nom", "poke", "cry", "kiss",
+    "pat", "hug", "wink", "facepalm"
+  ],
+
+  github: [
+    "git", "github", "sc", "script", "repo"
+  ]
+};
 // =========================
 // FONT STYLIZER
 // =========================
