@@ -24,7 +24,7 @@ const commandCategories = {
   ],
 
   owner: [
-    "mode", "clearsession", "clearsessions",
+    "mode", "clearsession",
     "antidelete", "anticall",
     "cleartmp",
     "sudo", "update", "settings", "setpp",
@@ -40,7 +40,7 @@ const commandCategories = {
   ],
 
   converter: [
-    "tts", "attp", "url", "tovoice", "toaudio",
+    "tts", "attp", "url", "tovoice", "tomp3",
     "gif", "cut", "bass", "slowed", "rename"
   ],
 
@@ -62,6 +62,12 @@ const commandCategories = {
     "goodmorning", "goodnight",
     "roseday", "simp", "stupid"
   ],
+
+  textmaker: [
+    "metallic", "ice", "snow", "impressive", "matrix", "light",
+    "neon", "devil", "purple", "thunder", "leaves", "1917",
+    "arena", "hacker", "sand", "blackpink", "glitch", "fire"
+    ],
 
   downloader: [
     "play", "song", "img",
