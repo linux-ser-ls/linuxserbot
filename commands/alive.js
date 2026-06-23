@@ -20,32 +20,35 @@ async function aliveCommand(sock, chatId, message) {
         const seconds = Math.floor(uptime % 60);
 
         const aliveText = `👋 ʜᴇʏ ${username},
- ɪ ᴀᴍ 𝐋ɪɴᴜx 𝐒ᴇʀ ᴡʜᴀᴛꜱᴀᴩᴩ ʙᴏᴛ ᴀʟɪᴠᴇ ɴᴏᴡ!
+ɪ ᴀᴍ 𝐋ɪɴᴜx 𝐒ᴇʀ ᴡʜᴀᴛꜱᴀᴩᴩ ʙᴏᴛ ᴀʟɪᴠᴇ ɴᴏᴡ!
 
-📌 ᴛʏᴩᴇ *".ᴍᴇɴᴜ"* ᴛᴏ ɢᴇᴛ ᴍʏ ᴄᴏᴍᴍᴀɴᴅ ʟɪꜱᴛ.
+📌 ᴛʏᴘᴇ *.menu* ᴛᴏ ɢᴇᴛ ᴍʏ ᴄᴏᴍᴍᴀɴᴅ ʟɪꜱᴛ.
 
 ⚡ ᴠᴇʀꜱɪᴏɴ: ${settings.version || "3.0.7"}
 ⏰ ʀᴜɴᴛɪᴍᴇ: ${hours}ʜ ${minutes}ᴍ ${seconds}ꜱ`;
 
-        await sock.sendMessage(
-            chatId,
+        // 🔘 BUTTON ADDED HERE
+        const buttons = [
             {
-                text: aliveText,
-                
-            },
-            { quoted: message }
-        );
+                buttonId: ".menu",
+                buttonText: { displayText: "📜 MENU" },
+                type: 1
+            }
+        ];
+
+        await sock.sendMessage(chatId, {
+            text: aliveText,
+            footer: "⚡ Linux Ser Bot",
+            buttons: buttons,
+            headerType: 1
+        }, { quoted: message });
 
     } catch (error) {
         console.error("Alive Command Error:", error);
 
-        await sock.sendMessage(
-            chatId,
-            {
-                text: "❌ Failed to check bot status."
-            },
-            { quoted: message }
-        );
+        await sock.sendMessage(chatId, {
+            text: "❌ Failed to check bot status."
+        }, { quoted: message });
     }
 }
 
