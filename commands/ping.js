@@ -11,7 +11,7 @@ async function pingCommand(sock, chatId, message) {
 
         const tempMsg = await sock.sendMessage(
             chatId,
-            { text: '⚡ Checking speed...' },
+            { text: '_⚡ Checking speed..._' },
             { quoted: message }
         );
 
