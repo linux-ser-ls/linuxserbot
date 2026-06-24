@@ -148,7 +148,7 @@ const { startQuizPoll, revealQuizAnswer } = require('./commands/quiz');
 const renameCommand = require('./commands/rename');
 const wikipediaCommand = require('./commands/wikipedia');
 const gifCommand = require('./commands/gif');
-const groupLinkCommand = require('./commands/grouplink');
+const grouplinkCommand = require('./commands/grouplink');
 
 // Global settings
 global.packname = settings.packname;
