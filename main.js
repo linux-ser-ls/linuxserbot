@@ -148,6 +148,7 @@ const { startQuizPoll, revealQuizAnswer } = require('./commands/quiz');
 const renameCommand = require('./commands/rename');
 const wikipediaCommand = require('./commands/wikipedia');
 const gifCommand = require('./commands/gif');
+const groupLinkCommand = require("./commands/grouplink");
 
 // Global settings
 global.packname = settings.packname;
@@ -743,6 +744,9 @@ break;
                 break;
             case userMessage === '.tagnotadmin':
                 await tagNotAdminCommand(sock, chatId, senderId, message);
+                break;
+            case userMessage === '.link':
+                await grouplinkCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.hidetag'):
                 {
