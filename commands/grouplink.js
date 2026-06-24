@@ -21,7 +21,7 @@ async function grouplinkCommand(sock, chatId, message) {
         const link = `https://chat.whatsapp.com/${inviteCode}`;
 
         await sock.sendMessage(chatId, {
-            text: `*𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓ • ɢʀᴏᴜᴘ ʟɪɴᴋ*\n\n🔗: ${link}`
+            text: `*𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓ • ɢʀᴏᴜᴘ ʟɪɴᴋ 🔗*\n\n${link}`
         }, { quoted: message });
 
     } catch (error) {
