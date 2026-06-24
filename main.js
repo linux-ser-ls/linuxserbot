@@ -22,6 +22,7 @@ const axios = require('axios');
 const ffmpeg = require('fluent-ffmpeg');
 const { isSudo } = require('./lib/index');
 const isOwnerOrSudo = require('./lib/isOwner');
+const menuSettings = require('./lib/menuSettings');
 const { autotypingCommand, isAutotypingEnabled, handleAutotypingForMessage, handleAutotypingForCommand, showTypingAfterCommand } = require('./commands/autotyping');
 const { autoreadCommand, isAutoreadEnabled, handleAutoread } = require('./commands/autoread');
 
@@ -29,7 +30,6 @@ const { autoreadCommand, isAutoreadEnabled, handleAutoread } = require('./comman
 const tagAllCommand = require('./commands/tagall');
 const menu1Command = require('./commands/menu1');
 const menu2Command = require('./commands/menu2');
-const menuSettings = require('./commands/menuSettings');
 const calcCommand = require('./commands/calc');
 const banCommand = require('./commands/ban');
 const { promoteCommand } = require('./commands/promote');
