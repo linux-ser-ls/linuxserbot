@@ -17,7 +17,7 @@ const commandCategories = {
     "antilink", "antitag", "antibadword",
     "clear", "jid",
     "tag", "tagall", "tagnotadmin", "hidetag",
-    "resetlink",
+    "link", "resetlink",
     "welcome", "goodbye",
     "setgpp", "setgname", "setgdesc",
     "groupinfo", "topmembers"
