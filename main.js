@@ -27,7 +27,7 @@ const { autoreadCommand, isAutoreadEnabled, handleAutoread } = require('./comman
 
 // Command imports
 const tagAllCommand = require('./commands/tagall');
-const helpCommand = require('./commands/help');
+const menu1Command = require('./commands/menu1');
 const calcCommand = require('./commands/calc');
 const banCommand = require('./commands/ban');
 const { promoteCommand } = require('./commands/promote');
