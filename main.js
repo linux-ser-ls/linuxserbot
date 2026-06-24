@@ -28,6 +28,8 @@ const { autoreadCommand, isAutoreadEnabled, handleAutoread } = require('./comman
 // Command imports
 const tagAllCommand = require('./commands/tagall');
 const menu1Command = require('./commands/menu1');
+const menu2Command = require('./commands/menu2');
+const menuSettings = require('./commands/menuSettings');
 const calcCommand = require('./commands/calc');
 const banCommand = require('./commands/ban');
 const { promoteCommand } = require('./commands/promote');
@@ -392,10 +394,36 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 }
                 await unbanCommand(sock, chatId, message);
                 break;
-            case userMessage === '.help' || userMessage === '.menu' || userMessage === '.bot' || userMessage === '.list':
-                await helpCommand(sock, chatId, message, global.channelLink);
-                commandExecuted = true;
-                break;
+            case '.menu':
+            case '.help': {
+             const currentMenu = menuSettings.getMenu();
+
+          if (currentMenu === 'menu2') {
+           await menu2Command(sock, chatId, message);
+         } else {
+           await menu1Command(sock, chatId, message);
+        }
+         break;
+          }
+               case '.menu1': {
+    menuSettings.setMenu('menu1');
+
+    await sock.sendMessage(chatId, {
+        text: '✅ Menu 1 has been set as default menu.'
+    });
+
+    break;
+               }
+
+            case '.menu2': {
+    menuSettings.setMenu('menu2');
+
+    await sock.sendMessage(chatId, {
+        text: '✅ Menu 2 has been set as default menu.'
+    });
+
+    break;
+            }
             case userMessage.startsWith('.calc'): {
                 const text = userMessage
                     .split(' ')
