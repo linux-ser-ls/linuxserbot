@@ -143,7 +143,7 @@ function buildMenu() {
 // =========================
 // HELP COMMAND
 // =========================
-async function helpCommand(sock, chatId, message) {
+async function menu1Command(sock, chatId, message) {
 
   await sock.sendMessage(chatId, {
     react: { text: "📃", key: message.key }
@@ -233,4 +233,4 @@ ${buildMenu()}
   }
 }
 
-module.exports = helpCommand;
+module.exports = menu1Command;
