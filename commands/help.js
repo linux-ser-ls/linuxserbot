@@ -193,7 +193,6 @@ ${buildMenu()}
 
   const imagePath = path.join(__dirname, "../assets/bot_image.jpg");
   const mp3Path = path.join(__dirname, "../assets/menu.mp3");
-  const oggPath = path.join(__dirname, "../assets/menu.ogg");
 
   // =========================
   // SEND MENU
