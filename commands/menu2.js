@@ -3,8 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-
-
 // =========================
 // COMMAND CATEGORIES (RAW)
 // =========================
@@ -149,9 +147,9 @@ function buildMenu() {
 }
 
 // =========================
-// HELP COMMAND
+// MENU2 COMMAND
 // =========================
-async function helpCommand(sock, chatId, message) {
+async function menu2Command(sock, chatId, message) {
 
   // NOTE: Menu text below stays unchanged. Only style/art will be replicated for new menu commands.
 
@@ -183,7 +181,7 @@ async function helpCommand(sock, chatId, message) {
   const pluginCount = Object.values(commandCategories)
     .reduce((a, b) => a + b.length, 0);
 
-const menu = `
+  const menu = `
 ╭───〔 𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓ 〕───╮
 │✺╭───────────────
 │✺│  ✦ 𝐓ɪᴍᴇ      : ${time}
@@ -194,7 +192,7 @@ const menu = `
 │✺│  ✦ 𝐏ʟᴜɢɪɴꜱ   : ${pluginCount}
 │✺│  ✦ 𝐑ᴜɴᴛɪᴍᴇ   : ${runtime()}
 │✺╰───────────────
-╰────────────────────────╯
+╰────────────────────────╯;
 
 ${buildMenu()}
 ╭───〔 𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓ 〕───╮
@@ -203,8 +201,6 @@ ${buildMenu()}
 │✇│        𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓
 │✇╰───────────────
 ╰─────────────────╯`;
-
-
 
   const imagePath = path.join(__dirname, "../assets/bot_image.jpg");
   const mp3Path = path.join(__dirname, "../assets/menu.mp3");
