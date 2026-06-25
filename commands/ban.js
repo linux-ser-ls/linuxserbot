@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { channelInfo } = require('../lib/messageConfig');
 const isAdmin = require('../lib/isAdmin');
 const { isSudo } = require('../lib/index');
 
