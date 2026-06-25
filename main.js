@@ -22,15 +22,12 @@ const axios = require('axios');
 const ffmpeg = require('fluent-ffmpeg');
 const { isSudo } = require('./lib/index');
 const isOwnerOrSudo = require('./lib/isOwner');
-const menuSettings = require('./lib/menuSettings');
 const { autotypingCommand, isAutotypingEnabled, handleAutotypingForMessage, handleAutotypingForCommand, showTypingAfterCommand } = require('./commands/autotyping');
 const { autoreadCommand, isAutoreadEnabled, handleAutoread } = require('./commands/autoread');
 
 // Command imports
 const tagAllCommand = require('./commands/tagall');
 const menuCommand = require('./commands/menu');
-const menu1Command = require('./commands/menu1');
-const menu2Command = require('./commands/menu2');
 const calcCommand = require('./commands/calc');
 const banCommand = require('./commands/ban');
 const { promoteCommand } = require('./commands/promote');
@@ -395,35 +392,9 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 }
                 await unbanCommand(sock, chatId, message);
                 break;
-            case '.menu':
-            case '.help': {
-             const currentMenu = menuSettings.getMenu();
-
-          if (currentMenu === 'menu2') {
-           await menu2Command(sock, chatId, message);
-         } else {
-           await menu1Command(sock, chatId, message);
-        }
-         break;
-          }
-               case '.menu1': {
-    menuSettings.setMenu('menu1');
-
-    await sock.sendMessage(chatId, {
-        text: '✅ Menu 1 has been set as default menu.'
-    });
-
-    break;
-               }
-
-            case '.menu2': {
-    menuSettings.setMenu('menu2');
-
-    await sock.sendMessage(chatId, {
-        text: '✅ Menu 2 has been set as default menu.'
-    });
-
-    break;
+            case userMessage.startWith('.menu'):
+                await menuCommand(sock, chatId, message);
+                break;
             }
             case userMessage.startsWith('.calc'): {
                 const text = userMessage
