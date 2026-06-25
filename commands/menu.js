@@ -233,4 +233,4 @@ ${buildMenu()}
   }
 }
 
-module.exports = menu1Command;
+module.exports = menuCommand;
