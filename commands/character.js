@@ -14,8 +14,7 @@ async function characterCommand(sock, chatId, message) {
     
     if (!userToAnalyze) {
         await sock.sendMessage(chatId, { 
-            text: 'Please mention someone or reply to their message to analyze their character!', 
-            ...channelInfo 
+            text: 'Please mention someone or reply to their message to analyze their character!'
         });
         return;
     }
@@ -65,15 +64,13 @@ async function characterCommand(sock, chatId, message) {
         await sock.sendMessage(chatId, {
             image: { url: profilePic },
             caption: analysis,
-            mentions: [userToAnalyze],
-            ...channelInfo
+            mentions: [userToAnalyze]
         });
 
     } catch (error) {
         console.error('Error in character command:', error);
         await sock.sendMessage(chatId, { 
-            text: 'Failed to analyze character! Try again later.',
-            ...channelInfo 
+            text: 'Failed to analyze character! Try again later.'
         });
     }
 }
