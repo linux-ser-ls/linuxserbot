@@ -135,7 +135,6 @@ const { animeCommand } = require('./commands/anime');
 const stickercropCommand = require('./commands/stickercrop');
 const updateCommand = require('./commands/update');
 const imgCommand = require('./commands/img');
-const { reminiCommand } = require('./commands/remini');
 const { igsCommand } = require('./commands/igs');
 const { anticallCommand, readState: readAnticallState } = require('./commands/anticall');
 const { pmblockerCommand, readState: readPmBlockerState } = require('./commands/pmblocker');
