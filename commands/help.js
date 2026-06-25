@@ -8,7 +8,7 @@ const { execSync } = require('child_process');
 // =========================
 const commandCategories = {
   general: [
-    "menu", "menu2", "ping", "alive", "owner", "runtime", "news", "8ball"
+    "menu", "menu2", "ping", "alive", "owner", "runtime", "news", "8ball", "setmenuimg", "setmenuaudio"
   ],
 
   admin: [
