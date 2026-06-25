@@ -180,8 +180,8 @@ async function helpCommand(sock, chatId, message) {
 │ *ᴛɪᴍᴇ* : ${time}
 │ *ᴅᴀᴛᴇ* : ${date}
 │ *ᴏᴡɴᴇʀ* : ${settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓'}
-│ *ᴜꜱᴇʀ* : ${message.pushName || "User"}
-│ *ᴘʀᴇꜰɪx* : [ . ]
+│ *ᴜꜱᴇʀ* : ${message.pushName || "​🇺​​🇸​​🇪​​🇷​"}
+│ *ᴘʀᴇꜰɪx* : [ *.* ]
 │ *ᴘʟᴜɢɪɴꜱ* : ${pluginCount}
 │ *ʀᴜɴᴛɪᴍᴇ* : ${runtime()}
 ╰─────────────⦁

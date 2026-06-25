@@ -178,8 +178,8 @@ async function menu2Command(sock, chatId, message) {
 │✺│  ✦ 𝐓ɪᴍᴇ      : ${time}
 │✺│  ✦ 𝐃ᴀᴛᴇ      : ${date}
 │✺│  ✦ 𝐎ᴡɴᴇʀ     : ${settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓'}
-│✺│  ✦ 𝐔ꜱᴇʀ      : ${message.pushName || "User"}
-│✺│  ✦ 𝐏ʀᴇꜰɪx    : [ . ]
+│✺│  ✦ 𝐔ꜱᴇʀ      : ${message.pushName || "​🇺​​🇸​​🇪​​🇷​"}
+│✺│  ✦ 𝐏ʀᴇꜰɪx    : [ *.* ]
 │✺│  ✦ 𝐏ʟᴜɢɪɴꜱ   : ${pluginCount}
 │✺│  ✦ 𝐑ᴜɴᴛɪᴍᴇ   : ${runtime()}
 │✺╰───────────────
