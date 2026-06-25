@@ -149,6 +149,8 @@ const renameCommand = require('./commands/rename');
 const wikipediaCommand = require('./commands/wikipedia');
 const gifCommand = require('./commands/gif');
 const grouplinkCommand = require('./commands/grouplink');
+const setMenuImg = require("./commands/setmenuimg");
+const setMenuAudio = require("./commands/setmenuaudio");
 
 // Global settings
 global.packname = settings.packname;
@@ -400,7 +402,12 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await menu2Command(sock, chatId, message);
                 commandExecuted = true;
                 break;
-
+            case userMessage === '.setmenuimg':
+                await setMenuImg(sock, chatId, message);
+                break;
+            case userMessage === '.setmenuaudio':
+                await setMenuAudio(sock, chatId, message);
+                break;
             case userMessage.startsWith('.calc'): {
                 const text = userMessage
                     .split(' ')
