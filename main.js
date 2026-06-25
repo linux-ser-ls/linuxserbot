@@ -400,8 +400,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
             case userMessage === '.menu2':
                 await menutwoCommand(sock, chatId, message);
                 commandExecuted = true;
-                break;
-            }
+                break;a
             case userMessage.startsWith('.calc'): {
                 const text = userMessage
                     .split(' ')
