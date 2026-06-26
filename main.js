@@ -27,7 +27,7 @@ const { autoreadCommand, isAutoreadEnabled, handleAutoread } = require('./comman
 
 // Command imports
 const tagAllCommand = require('./commands/tagall');
-const helpCommand = require('./commands/help');
+const menuCommand = require('./commands/menu');
 const menu2Command = require('./commands/menu2');
 const calcCommand = require('./commands/calc');
 const banCommand = require('./commands/ban');
@@ -395,7 +395,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await unbanCommand(sock, chatId, message);
                 break;
             case userMessage === '.help' || userMessage === '.menu' || userMessage === '.bot' || userMessage === '.list':
-                await helpCommand(sock, chatId, message);
+                await menuCommand(sock, chatId, message);
                 commandExecuted = true;
                 break;
             case userMessage === '.menu2':
