@@ -12,7 +12,7 @@ const commandCategories = {
   ],
 
   admin: [
-    "ban", "promote", "demote", "admins", "mute", "unmute",
+    "ban", "unban", "promote", "demote", "admins", "mute", "unmute",
     "delete", "kick", "warn", "unwarn", "warnings",
     "antilink", "antitag", "antibadword", "clear", "jid",
     "tag", "tagall", "tagnotadmin", "hidetag", "link", "resetlink",
