@@ -1061,7 +1061,7 @@ break;
                 await urlCommand(sock, chatId, message);
                 break;
             case userMessage.startWith('.topdf'):
-                await topdf(sock, chatId, message);
+                await topdfCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.emojimix') || userMessage.startsWith('.emix'):
                 await emojimixCommand(sock, chatId, message);
