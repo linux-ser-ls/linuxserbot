@@ -52,7 +52,7 @@ async function handleTranslateCommand(sock, chatId, message, match) {
                           `│ 💡 *ᴇхᴀᴍᴘʟᴇ:*\n` +
                           `│ \`.translate hello ml\`\n` +
                           `╰────────────────────╯\n\n` +
-                          `ᴘᴏᴡᴇʀᴇᴅ ʙʏ 𝐋ɪɴᴜх 𝐒ᴇʀ 🧃✨`,
+                          `> ᴘᴏᴡᴇʀᴇᴅ ʙʏ 𝐋ɪɴᴜх 𝐒ᴇʀ 🧃✨`,
                     quoted: message
                 });
             }
@@ -120,13 +120,36 @@ async function handleTranslateCommand(sock, chatId, message, match) {
         }
 
         // Formatted Success Response
-        const successMessage = `🌐 Translation
+        const languageNames = {
+    auto: "Auto",
+    en: "English",
+    ml: "Malayalam",
+    hi: "Hindi",
+    ta: "Tamil",
+    te: "Telugu",
+    kn: "Kannada",
+    fr: "French",
+    de: "German",
+    es: "Spanish",
+    it: "Italian",
+    pt: "Portuguese",
+    ru: "Russian",
+    ja: "Japanese",
+    ko: "Korean",
+    zh: "Chinese",
+    ar: "Arabic",
+    tr: "Turkish",
+    id: "Indonesian",
+    vi: "Vietnamese",
+    nl: "Dutch"
+};
 
-📝 ${textToTranslate}
+const detectedLang = data?.[2] || "auto";
 
-➡️ ${translatedText}
+const successMessage =
+`${languageNames[detectedLang] || detectedLang} ➛ ${languageNames[lang] || lang}
 
-🌍 ${lang.toUpperCase()}`;
+${translatedText}`;
 
         // Send translation
         await sock.sendMessage(chatId, {
