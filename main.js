@@ -41,6 +41,7 @@ const warnCommand = require('./commands/warn');
 const warningsCommand = require('./commands/warnings');
 const unwarnCommand = require('./commands/unwarn');
 const ttsCommand = require('./commands/tts');
+const topdf = require("./commands/topdf");
 const tovnCommand = require('./commands/tovn');
 const tomp3Command = require('./commands/tomp3');
 const cutAudio = require('./commands/cut');
@@ -1058,6 +1059,9 @@ break;
                 break;
             case userMessage.startsWith('.tourl') || userMessage.startsWith('.url'):
                 await urlCommand(sock, chatId, message);
+                break;
+            case userMessage.startWith('.topdf'):
+                await topdf(sock, chatId, message);
                 break;
             case userMessage.startsWith('.emojimix') || userMessage.startsWith('.emix'):
                 await emojimixCommand(sock, chatId, message);
