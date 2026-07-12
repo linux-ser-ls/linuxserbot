@@ -37,15 +37,12 @@ async function calcCommand(
             return await sock.sendMessage(chatId, {
 
                 text:
-`╭━━━〔 🧮 Calculator 〕━━━╮
-┃ ✦ Please provide
-┃ ✦ a math expression
-┃
-┃ 📌 Example:
-┃ ✦ .calc 2+2
-┃ ✦ .calc 10*5
-┃ ✦ .calc (5+5)*2
-╰━━━━━━━━━━━━━━━━━━╯`
+`Please provide a math expression 🤍
+
+📌 Example:
+.calc 2+2
+.calc 10*5
+.calc (5+5)*2`
 
             }, { quoted: message });
 
@@ -85,13 +82,7 @@ async function calcCommand(
 
         const resultMessage =
 
-`╭━━━〔 🧮 Calculator 〕━━━╮
-┃ 📥 Expression:
-┃ ✦ ${text}
-┃
-┃ ✨ Result:
-┃ ✦ ${result}
-╰━━━━━━━━━━━━━━━━━━╯
+`*${text}=${result}*
 
 > Powered By 𝐋ɪɴᴜх 𝐒ᴇʀ ⚡`;
 
@@ -141,13 +132,9 @@ async function calcCommand(
         await sock.sendMessage(chatId, {
 
             text:
-`╭━━━〔 ❌ Calculator Error 〕━━━╮
-┃ ✦ Invalid math
-┃ ✦ expression
-┃
-┃ 📌 Example:
-┃ ✦ .calc 5+5
-╰━━━━━━━━━━━━━━━━━━━━╯`
+`❌ Invalid math expression
+
+📌 Example: .calc 5+5`
 
         }, { quoted: message });
 
