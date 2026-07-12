@@ -70,6 +70,7 @@ async function handleTranslateCommand(sock, chatId, message, match) {
 
         // Try multiple translation APIs in sequence
         let translatedText = null;
+        let detectedLang = "auto";
         let error = null;
 
         // Try API 1 (Google Translate API)
@@ -77,9 +78,11 @@ async function handleTranslateCommand(sock, chatId, message, match) {
             const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${lang}&dt=t&q=${encodeURIComponent(textToTranslate)}`);
             if (response.ok) {
                 const data = await response.json();
-                if (data && data[0] && data[0][0] && data[0][0][0]) {
-                    translatedText = data[0][0][0];
-                }
+
+           if (data && data[0] && data[0][0] && data[0][0][0]) {
+               translatedText = data[0][0][0];
+               detectedLang = data[2] || "auto";
+         }
             }
         } catch (e) {
             error = e;
@@ -143,8 +146,6 @@ async function handleTranslateCommand(sock, chatId, message, match) {
     vi: "Vietnamese",
     nl: "Dutch"
 };
-
-const detectedLang = data?.[2] || "auto";
 
 const successMessage =
 `${languageNames[detectedLang] || detectedLang} ➛ ${languageNames[lang] || lang}
