@@ -32,7 +32,7 @@ const commandCategories = {
   ],
 
   converter: [
-    "tts", "attp", "url", "tovoice", "tomp3",
+    "tts", "attp", "url", "topdf", "tovoice", "tomp3",
     "gif", "cut", "bass", "slowed", "rename"
   ],
 
