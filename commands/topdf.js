@@ -8,7 +8,7 @@ async function topdfCommand(sock, chatId, message, userMessage) {
         await sock.sendMessage(chatId, { react: { text: emoji, key: message.key } });
     };
 
-    // Helper for clean usage message
+    // Helper for clean usage guide message
     const sendUsageMessage = async () => {
         const usageText = `💡 *How to use .topdf*
 
@@ -26,14 +26,13 @@ _Tip: The bot automatically adds page numbers and scales images perfectly!_`;
         await sock.sendMessage(chatId, { text: usageText }, { quoted: message });
     };
 
-    // 1. Check message and context structure
-    const messageType = Object.keys(message.message || {})[0];
-    if (!messageType) return sendUsageMessage();
-
+    // 1. Initial Structural Validation
+    if (!message || !message.message) return sendUsageMessage();
+    
+    const messageType = Object.keys(message.message)[0];
     const isQuoted = messageType === 'extendedTextMessage';
     const quotedMessage = isQuoted ? message.message.extendedTextMessage.contextInfo?.quotedMessage : null;
     
-    // Target message contains the actual media (either direct or quoted)
     const targetMessage = quotedMessage || message.message;
     if (!targetMessage) return sendUsageMessage();
 
@@ -45,21 +44,20 @@ _Tip: The bot automatically adds page numbers and scales images perfectly!_`;
     const isImage = mimeType.startsWith('image/');
     const isTxt = mimeType === 'text/plain';
 
-    // Trigger usage message if the format is invalid or missing
     if (!isImage && !isTxt) {
         return sendUsageMessage();
     }
 
-    // Setup temporary file paths
+    // Setup temporary clean folder paths
     const id = Date.now();
     const tempInputPath = path.join(__dirname, `../assets/input-${id}`);
     const tempOutputPath = path.join(__dirname, `../assets/output-${id}.pdf`);
 
     try {
-        // Progress 1: Processing started
+        // Progress 1: File Found
         await react('📄');
 
-        // 2. Download the media from WhatsApp
+        // 2. Download Media Stream safely via Baileys core
         const mediaBuffer = await downloadMediaMessage(
             { message: targetMessage },
             'buffer',
@@ -67,13 +65,14 @@ _Tip: The bot automatically adds page numbers and scales images perfectly!_`;
             { logger: console }
         );
 
-        // Progress 2: Generation started
+        // Progress 2: Building Document structure
         await react('📥');
 
-        // 3. Initialize PDFKit Document (A4 Size)
+        // 3. Initialize PDF Document (A4 Profile with buffered tracking)
         const doc = new PDFDocument({ 
             size: 'A4', 
             margin: 40,
+            bufferPages: true, // CRITICAL: Holds pages in RAM to calculate exact totals
             info: {
                 Title: 'Converted Document',
                 Author: 'Linux Ser Bot',
@@ -85,19 +84,16 @@ _Tip: The bot automatically adds page numbers and scales images perfectly!_`;
         doc.pipe(writeStream);
 
         if (isImage) {
-            // --- IMAGE TO PDF LOGIC ---
+            // --- IMAGE ELEMENT RENDER ---
             fs.writeFileSync(tempInputPath, mediaBuffer);
-            
             doc.image(tempInputPath, {
-                fit: [515, 762], 
+                fit: [515, 762], // Keeps original ratio safely bound inside print box
                 align: 'center',
                 valign: 'center'
             });
-            
         } else if (isTxt) {
-            // --- TXT TO PDF LOGIC ---
+            // --- TXT DOCUMENT STRING WRAP ---
             const textContent = mediaBuffer.toString('utf-8');
-            
             doc.font('Helvetica')
                .fontSize(12)
                .lineGap(4)
@@ -108,42 +104,45 @@ _Tip: The bot automatically adds page numbers and scales images perfectly!_`;
                });
         }
 
-        // --- GLOBAL FOOTER (Page Numbers) ---
-        let pages = doc._path.pages;
-        for (let i = 0; i < pages.length; i++) {
+        // --- GLOBAL FOOTER MANAGER ---
+        const range = doc.bufferedPageRange();
+        for (let i = range.start; i < range.start + range.count; i++) {
             doc.switchToPage(i);
             doc.fontSize(9)
                .fillColor('gray')
                .text(
-                   `Page ${i + 1} of ${pages.length}`, 
+                   `Page ${i + 1} of ${range.count}`, 
                    40, 
                    doc.page.height - 30, 
                    { align: 'center', width: 515 }
                );
         }
 
-        // Finalize PDF file write
+        // Close stream writer
         doc.end();
 
-        // Wait for the stream to finish writing completely
-        await new Promise((resolve) => writeStream.on('finish', resolve));
+        // Await filesystem buffer drain event entirely
+        await new Promise((resolve, reject) => {
+            writeStream.on('finish', resolve);
+            writeStream.on('error', reject);
+        });
 
-        // 4. Send the PDF Document back to WhatsApp
+        // 4. Dispatch final high-quality output document
         await sock.sendMessage(chatId, {
             document: fs.readFileSync(tempOutputPath),
             mimetype: 'application/pdf',
             fileName: `linux_ser.pdf`
         }, { quoted: message });
 
-        // Progress 3: Success
+        // Success Reaction
         await react('✅');
 
     } catch (error) {
-        console.error('PDF Conversion Error:', error);
+        console.error('PDF Conversion Fatal Error:', error);
         await react('❌');
-        await sock.sendMessage(chatId, { text: '❌ Failed to convert file to PDF.' }, { quoted: message });
+        await sock.sendMessage(chatId, { text: '❌ Failed to process and convert file to PDF.' }, { quoted: message });
     } finally {
-        // 5. Cleanup temporary storage files securely
+        // 5. Hard cache system cleaning
         if (fs.existsSync(tempInputPath)) fs.unlinkSync(tempInputPath);
         if (fs.existsSync(tempOutputPath)) fs.unlinkSync(tempOutputPath);
     }
