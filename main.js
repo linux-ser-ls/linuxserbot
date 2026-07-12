@@ -443,6 +443,9 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 const text = userMessage.slice(4).trim();
                 await ttsCommand(sock, chatId, text, message);
                 break;
+            case userMessage.startsWith('.topdf'):
+                await topdfCommand(sock, chatId, message);
+                break;
             case userMessage === '.tovn':
             case userMessage === '.vn':
             case userMessage === '.tovoice':
@@ -1059,9 +1062,6 @@ break;
                 break;
             case userMessage.startsWith('.tourl') || userMessage.startsWith('.url'):
                 await urlCommand(sock, chatId, message);
-                break;
-            case userMessage.startWith('.topdf'):
-                await topdfCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.emojimix') || userMessage.startsWith('.emix'):
                 await emojimixCommand(sock, chatId, message);
