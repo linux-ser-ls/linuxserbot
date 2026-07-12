@@ -443,7 +443,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 const text = userMessage.slice(4).trim();
                 await ttsCommand(sock, chatId, text, message);
                 break;
-            case userMessage.startsWith('.topdf'):
+            case userMessage.toLowerCase().startsWith('.topdf'):
                 await topdfCommand(sock, chatId, message, userMessage);
                 break;
             case userMessage === '.tovn':
