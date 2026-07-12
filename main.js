@@ -444,7 +444,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 await ttsCommand(sock, chatId, text, message);
                 break;
             case userMessage.startsWith('.topdf'):
-                await topdf(sock, chatId, message, userMessage);
+                await topdfCommand(sock, chatId, message, userMessage);
                 break;
             case userMessage === '.tovn':
             case userMessage === '.vn':
