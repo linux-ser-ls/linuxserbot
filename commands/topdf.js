@@ -50,13 +50,6 @@ const mimeType =
     documentMessage?.mimetype ||
     '';
 
-const isImage = mimeType.startsWith('image/');
-const isTxt = mimeType === 'text/plain';
-
-if (!isImage && !isTxt) {
-    return sendUsageMessage();
-}
-
     // Validate if it's a convertible format
     const isImage = mimeType.startsWith('image/');
     const isTxt = mimeType === 'text/plain';
