@@ -29,6 +29,7 @@
     "awesome-phonenumber": "^5.9.0",
     "axios": "^1.8.4",
     "jsqr": "^1.4.0",
+    "pdf-lib": "^1.17.1",
     "jimp": "^0.22.12",
     "wikipedia": "^2.1.2",
     "chalk": "^4.1.2",
