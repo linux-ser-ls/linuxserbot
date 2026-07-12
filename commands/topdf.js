@@ -29,16 +29,33 @@ _Tip: The bot automatically adds page numbers and scales images perfectly!_`;
     // 1. Initial Structural Validation
     if (!message || !message.message) return sendUsageMessage();
     
-    const messageType = Object.keys(message.message)[0];
-    const isQuoted = messageType === 'extendedTextMessage';
-    const quotedMessage = isQuoted ? message.message.extendedTextMessage.contextInfo?.quotedMessage : null;
-    
-    const targetMessage = quotedMessage || message.message;
-    if (!targetMessage) return sendUsageMessage();
+    const m = message.message;
 
-    const hasImage = targetMessage.imageMessage;
-    const hasDocument = targetMessage.documentMessage;
-    const mimeType = hasImage?.mimetype || hasDocument?.mimetype || '';
+let targetMessage = m;
+
+if (m.extendedTextMessage?.contextInfo?.quotedMessage) {
+    targetMessage = m.extendedTextMessage.contextInfo.quotedMessage;
+}
+
+const imageMessage =
+    targetMessage.imageMessage ||
+    m.imageMessage;
+
+const documentMessage =
+    targetMessage.documentMessage ||
+    m.documentMessage;
+
+const mimeType =
+    imageMessage?.mimetype ||
+    documentMessage?.mimetype ||
+    '';
+
+const isImage = mimeType.startsWith('image/');
+const isTxt = mimeType === 'text/plain';
+
+if (!isImage && !isTxt) {
+    return sendUsageMessage();
+}
 
     // Validate if it's a convertible format
     const isImage = mimeType.startsWith('image/');
@@ -59,11 +76,14 @@ _Tip: The bot automatically adds page numbers and scales images perfectly!_`;
 
         // 2. Download Media Stream safely via Baileys core
         const mediaBuffer = await downloadMediaMessage(
-            { message: targetMessage },
-            'buffer',
-            {},
-            { logger: console }
-        );
+    { message: targetMessage },
+    'buffer',
+    {},
+    {
+        logger: console,
+        reuploadRequest: sock.updateMediaMessage
+    }
+);
 
         // Progress 2: Building Document structure
         await react('📥');
