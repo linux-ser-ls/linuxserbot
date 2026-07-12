@@ -3,7 +3,7 @@ const path = require('path');
 const PDFDocument = require('pdfkit');
 const { downloadMediaMessage } = require('@whiskeysockets/baileys');
 
-async function topdfCommand(sock, chatId, message) {
+async function topdfCommand(sock, chatId, message, userMessage) {
     const react = async (emoji) => {
         await sock.sendMessage(chatId, { react: { text: emoji, key: message.key } });
     };
@@ -50,7 +50,7 @@ _Tip: The bot automatically adds page numbers and scales images perfectly!_`;
         return sendUsageMessage();
     }
 
-    // Setup file paths
+    // Setup temporary file paths
     const id = Date.now();
     const tempInputPath = path.join(__dirname, `../assets/input-${id}`);
     const tempOutputPath = path.join(__dirname, `../assets/output-${id}.pdf`);
@@ -76,7 +76,7 @@ _Tip: The bot automatically adds page numbers and scales images perfectly!_`;
             margin: 40,
             info: {
                 Title: 'Converted Document',
-                Author: 'ʟɪɴᴜx ꜱᴇʀ ʙᴏᴛ',
+                Author: 'Linux Ser Bot',
                 Subject: 'Image/Text to PDF Conversion'
             }
         });
@@ -143,7 +143,7 @@ _Tip: The bot automatically adds page numbers and scales images perfectly!_`;
         await react('❌');
         await sock.sendMessage(chatId, { text: '❌ Failed to convert file to PDF.' }, { quoted: message });
     } finally {
-        // 5. Cleanup temporary storage files
+        // 5. Cleanup temporary storage files securely
         if (fs.existsSync(tempInputPath)) fs.unlinkSync(tempInputPath);
         if (fs.existsSync(tempOutputPath)) fs.unlinkSync(tempOutputPath);
     }
