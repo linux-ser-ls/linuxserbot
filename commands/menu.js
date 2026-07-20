@@ -140,7 +140,7 @@ function buildMenu() {
 // =========================
 // MENU2 COMMAND
 // =========================
-async function menu2Command(sock, chatId, message) {
+async function menuCommand(sock, chatId, message) {
 
   // NOTE: Menu text below stays unchanged. Only style/art will be replicated for new menu commands.
 
