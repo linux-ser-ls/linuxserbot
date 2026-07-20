@@ -145,7 +145,7 @@ async function menuCommand(sock, chatId, message) {
   // NOTE: Menu text below stays unchanged. Only style/art will be replicated for new menu commands.
 
   await sock.sendMessage(chatId, {
-    react: { text: "📜", key: message.key }
+    react: { text: "📃", key: message.key }
   });
 
   const now = new Date();
@@ -175,11 +175,11 @@ async function menuCommand(sock, chatId, message) {
   const menu = `
 ╭───〔 𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓ 〕───╮
 │✺╭───────────────
-│✺│  ✦ 𝐓ɪᴍᴇ      : ${time}
-│✺│  ✦ 𝐃ᴀᴛᴇ      : ${date}
+│✺│  ✦ 𝐓ɪᴍᴇ        : ${time}
+│✺│  ✦ 𝐃ᴀᴛᴇ        : ${date}
 │✺│  ✦ 𝐎ᴡɴᴇʀ     : ${settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓'}
-│✺│  ✦ 𝐔ꜱᴇʀ      : ${message.pushName || "​🇺​​🇸​​🇪​​🇷​"}
-│✺│  ✦ 𝐏ʀᴇꜰɪx    : [ *.* ]
+│✺│  ✦ 𝐔ꜱᴇʀ       : ${message.pushName || "​🇺​​🇸​​🇪​​🇷​"}
+│✺│  ✦ 𝐏ʀᴇꜰɪx     : [ *.* ]
 │✺│  ✦ 𝐏ʟᴜɢɪɴꜱ   : ${pluginCount}
 │✺│  ✦ 𝐑ᴜɴᴛɪᴍᴇ   : ${runtime()}
 │✺╰───────────────
