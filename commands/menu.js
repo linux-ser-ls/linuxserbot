@@ -236,4 +236,4 @@ ${buildMenu()}╭───〔 𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓ 〕──�
   }
 }
 
-module.exports = menu2Command;
+module.exports = menuCommand;
