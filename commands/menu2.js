@@ -179,11 +179,11 @@ async function menu2Command(sock, chatId, message) {
 `╭───❮ 𝐋ɪɴᴜx-𝐒ᴇʀ ❯
 │ *ᴛɪᴍᴇ*      : ${time}
 │ *ᴅᴀᴛᴇ*      : ${date}
-│ *ᴏᴡɴᴇʀ*     : ${settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓'}
+│ *ᴏᴡɴᴇʀ*    : ${settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓'}
 │ *ᴜꜱᴇʀ*      : ${message.pushName || "​ᴜꜱᴇʀ​"}
-│ *ᴘʀᴇꜰɪx*    : [ *.* ]
-│ *ᴘʟᴜɢɪɴꜱ*   : ${pluginCount}
-│ *ʀᴜɴᴛɪᴍᴇ*   : ${runtime()}
+│ *ᴘʀᴇꜰɪx*     : [ *.* ]
+│ *ᴘʟᴜɢɪɴꜱ* : ${pluginCount}
+│ *ʀᴜɴᴛɪᴍᴇ* : ${runtime()}
 ╰─────────────⦁
 ${buildMenu()}
 ╭───❮ 𝐋ɪɴᴜx ꜱᴇʀ 🙂‍↔️🤎 ❯
