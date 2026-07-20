@@ -175,18 +175,15 @@ async function menu2Command(sock, chatId, message) {
   const pluginCount = Object.values(commandCategories)
     .reduce((a, b) => a + b.length, 0);
 
-  const line = (label, value) =>
-  `│ *${label.padEnd(9, ' ')}* : ${value}`;
-
-const menu =
+  const menu =
 `╭───❮ 𝐋ɪɴᴜx-𝐒ᴇʀ ❯
-${line('ᴛɪᴍᴇ', time)}
-${line('ᴅᴀᴛᴇ', date)}
-${line('ᴏᴡɴᴇʀ', settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓')}
-${line('ᴜꜱᴇʀ', message.pushName || 'ᴜꜱᴇʀ')}
-${line('ᴘʀᴇꜰɪx', '[ *.* ]')}
-${line('ᴘʟᴜɢɪɴꜱ', pluginCount)}
-${line('ʀᴜɴᴛɪᴍᴇ', runtime())}
+│ *ᴛɪᴍᴇ*      : ${time}
+│ *ᴅᴀᴛᴇ*      : ${date}
+│ *ᴏᴡɴᴇʀ*     : ${settings.ownerName || '𝐋ɪ፝֟፝ɴᴜꪎ 𝐒ᴇ𝚁 ⺓'}
+│ *ᴜꜱᴇʀ*      : ${message.pushName || "​ᴜꜱᴇʀ​"}
+│ *ᴘʀᴇꜰɪx*    : [ *.* ]
+│ *ᴘʟᴜɢɪɴꜱ*   : ${pluginCount}
+│ *ʀᴜɴᴛɪᴍᴇ*   : ${runtime()}
 ╰─────────────⦁
 ${buildMenu()}
 ╭───❮ 𝐋ɪɴᴜx ꜱᴇʀ 🙂‍↔️🤎 ❯
