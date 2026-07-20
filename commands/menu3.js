@@ -235,4 +235,4 @@ ${buildMenu()}
   }
 }
 
-module.exports = menuCommand;
+module.exports = menu2Command;
